@@ -11,7 +11,7 @@ function WorkingSection() {
       step: "2",
       title: "Fetch Comments",
       description: [
-        "LuckyHub grabs all comments from your videos quickly and safely.",
+        "CommentDraw grabs all comments from your videos quickly and safely.",
       ],
     },
     {
