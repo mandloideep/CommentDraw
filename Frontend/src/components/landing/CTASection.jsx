@@ -22,7 +22,7 @@ function CTASection() {
 
           <div className="w-full flex flex-col items-center justify-center">
             <p className="text-sm md:text-xl text-[#a1a1a1] text-center max-w-md">
-              Join thousands of content creators who trust LuckyHub for fair and
+              Join thousands of content creators who trust CommentDraw for fair and
             </p>
             <p className="text-sm md:text-xl text-[#a1a1a1] text-center max-w-md">
               transparent giveaways.
