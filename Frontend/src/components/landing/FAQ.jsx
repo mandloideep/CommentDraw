@@ -10,14 +10,14 @@ const FAQ = () => {
 
   const faqData = [
     {
-      question: "How does LuckyHub select giveaway winners?",
+      question: "How does CommentDraw select giveaway winners?",
       answer:
-        "LuckyHub fetches comments directly using the official YouTube Data API and selects winners programmatically based on your inputs (number of winners, videos provided, and optional keyword filters). The process is fully automated with no manual interference.",
+        "CommentDraw fetches comments directly using the official YouTube Data API and selects winners programmatically based on your inputs (number of winners, videos provided, and optional keyword filters). The process is fully automated with no manual interference.",
     },
     {
-      question: "Does LuckyHub require access to my YouTube password?",
+      question: "Does CommentDraw require access to my YouTube password?",
       answer:
-        "No. LuckyHub uses Google OAuth and official YouTube APIs. We never ask for your YouTube password and only request the minimum read-only permissions needed to fetch comments.",
+        "No. CommentDraw uses Google OAuth and official YouTube APIs. We never ask for your YouTube password and only request the minimum read-only permissions needed to fetch comments.",
     },
     {
       question: "Can I filter comments using keywords?",
@@ -25,14 +25,14 @@ const FAQ = () => {
         "Yes. You can apply keyword-based filtering so only comments containing specific words are considered during winner selection.",
     },
     {
-      question: "Can LuckyHub pick multiple winners?",
+      question: "Can CommentDraw pick multiple winners?",
       answer:
-        "Yes. You can choose how many winners you want according to your plan, and LuckyHub will generate a list of unique winners in a single selection process.",
+        "Yes. You can choose how many winners you want according to your plan, and CommentDraw will generate a list of unique winners in a single selection process.",
     },
     {
       question: "Can I select winners from multiple YouTube videos?",
       answer:
-        "Yes. LuckyHub allows you to add upto 3 multiple YouTube video links and selects winners by processing comments across all provided videos.",
+        "Yes. CommentDraw allows you to add upto 3 multiple YouTube video links and selects winners by processing comments across all provided videos.",
     },
     {
       question: "Is there a limit on how many giveaways I can run?",
@@ -42,12 +42,12 @@ const FAQ = () => {
     {
       question: "How does subscription tracking work?",
       answer:
-        "LuckyHub tracks how many giveaways and winners you have selected during the current subscription cycle and updates your remaining quota in real time.",
+        "CommentDraw tracks how many giveaways and winners you have selected during the current subscription cycle and updates your remaining quota in real time.",
     },
     {
       question: "Can I view my previous giveaway or payment details?",
       answer:
-        "Yes. LuckyHub stores your giveaway activity and last payment details, which you can view anytime from your dashboard.",
+        "Yes. CommentDraw stores your giveaway activity and last payment details, which you can view anytime from your dashboard.",
     },
   ];
 
@@ -60,7 +60,7 @@ const FAQ = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base">
-            Answers to common questions about LuckyHub
+            Answers to common questions about CommentDraw
           </p>
         </div>
 
