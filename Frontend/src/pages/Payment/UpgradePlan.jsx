@@ -73,7 +73,7 @@ function UpgradePlan() {
         </div>
 
         <p className="text-[#a1a1a1] text-center max-w-2xl text-lg">
-          Unlock the full potential of LuckyHub with our flexible pricing plans
+          Unlock the full potential of CommentDraw with our flexible pricing plans
           designed for creators of all sizes
         </p>
       </div>
