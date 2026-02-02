@@ -82,7 +82,7 @@ function VerifyUserPage() {
               {data?.message || "Email Verified Successfully!"}
             </h2>
             <p className="text-gray-400 mb-8">
-              Welcome to LuckyHub! You are being redirected to your dashboard...
+              Welcome to CommentDraw! You are being redirected to your dashboard...
             </p>
             <button
               onClick={handleContinue}
