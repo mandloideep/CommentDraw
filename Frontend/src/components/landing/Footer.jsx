@@ -54,7 +54,7 @@ function Footer() {
             size={28}
             onClick={() =>
               window.open(
-                "https://www.linkedin.com/in/prabhat-singh-rj415/",
+                "https://www.linkedin.com/in/thedeepmandloi/",
                 "_blank"
               )
             }
@@ -63,8 +63,8 @@ function Footer() {
       </div>
       <hr className="md:col-span-3 border-t-2  border-t-[#f7f7f7] dark:border-t-[#121212] w-[calc(100%-4rem)] md:w-[calc(100%-8rem)] mx-auto my-8" />
       <div className="flex flex-col justify-center items-center md:col-span-3 md:row-start-3gap-4 dark:text-[#a1a1a1] text-sm mb-8">
-        <p>© 2025 LuckyHub. All rights reserved. </p>
-        <p>Developed By Prabhat Singh</p>
+        <p>© 2025 CommentDraw. All rights reserved. </p>
+        <p>Developed By Deep Mandloi</p>
       </div>
     </footer>
   );
