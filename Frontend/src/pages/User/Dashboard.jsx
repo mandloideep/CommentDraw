@@ -32,7 +32,7 @@ function Dashboard() {
       {/*Heading*/}
       <div className="w-full flex flex-col justify-start items-start">
         <h1 className="w-full text-xl md:text-3xl font-bold">
-          LuckyHub Dashboard
+          CommentDraw Dashboard
         </h1>
         <p className="text-zinc-400 text-xs md:text-lg">
           Manage your giveaways and track performance
