@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
         },
         {
           label: "YouTube Comment Data",
-          desc: "Public comments are fetched temporarily via the YouTube Data API for winner selection. LuckyHub does not permanently store comment content.",
+          desc: "Public comments are fetched temporarily via the YouTube Data API for winner selection. CommentDraw does not permanently store comment content.",
         },
       ],
     },
@@ -61,7 +61,7 @@ const PrivacyPolicy = () => {
       content: [
         {
           label: "Secure Transmission",
-          desc: "All data exchanged between your browser and LuckyHub servers is protected using HTTPS and industry-standard TLS encryption.",
+          desc: "All data exchanged between your browser and CommentDraw servers is protected using HTTPS and industry-standard TLS encryption.",
         },
         {
           label: "Restricted Access",
@@ -69,7 +69,7 @@ const PrivacyPolicy = () => {
         },
         {
           label: "Session Security",
-          desc: "LuckyHub uses secure tokens to maintain sessions, ensuring your credentials are never exposed.",
+          desc: "CommentDraw uses secure tokens to maintain sessions, ensuring your credentials are never exposed.",
         },
       ],
     },
@@ -79,11 +79,11 @@ const PrivacyPolicy = () => {
       content: [
         {
           label: "Google OAuth",
-          desc: "Used for secure authentication. LuckyHub only accesses the basic profile details you explicitly approve.",
+          desc: "Used for secure authentication. CommentDraw only accesses the basic profile details you explicitly approve.",
         },
         {
           label: "YouTube Data API",
-          desc: "Used to retrieve public comments. LuckyHub complies with all YouTube API Services Terms of Service.",
+          desc: "Used to retrieve public comments. CommentDraw complies with all YouTube API Services Terms of Service.",
         },
         {
           label: "No Data Selling",
@@ -105,7 +105,7 @@ const PrivacyPolicy = () => {
         },
         {
           label: "Usage Tracking",
-          desc: "LuckyHub provides full transparency regarding your usage quotas and subscription status.",
+          desc: "CommentDraw provides full transparency regarding your usage quotas and subscription status.",
         },
       ],
     },
@@ -136,7 +136,7 @@ const PrivacyPolicy = () => {
                   Privacy Policy
                 </h1>
                 <p className="text-zinc-500 text-xs hidden sm:block">
-                  Transparency about how LuckyHub handles your data
+                  Transparency about how CommentDraw handles your data
                 </p>
               </div>
             </div>
@@ -151,11 +151,11 @@ const PrivacyPolicy = () => {
               <h2 className="font-semibold text-lg">Introduction</h2>
             </div>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
-              LuckyHub is built to help creators run fair YouTube giveaways. We
+              CommentDraw is built to help creators run fair YouTube giveaways. We
               collect only the information required to operate the platform and
               select winners reliably. For any concerns, reach out to us at{" "}
               <span className="text-red-500 font-medium">
-                privacy@luckyhub.com
+                privacy@commentdraw.com
               </span>
               .
             </p>
@@ -195,7 +195,7 @@ const PrivacyPolicy = () => {
               Questions about these Terms?
             </h3>
             <p className="text-zinc-500 text-sm mb-4 font-mono">
-              support@luckyhub.com
+              support@commentdraw.com
             </p>
             <button
               onClick={() => navigate(-1)}
