@@ -26,11 +26,11 @@ const TermsOfService = () => {
       content: [
         {
           label: "Account Access",
-          desc: "You must sign in using Google OAuth to access LuckyHub. You are responsible for maintaining the security of your account and any activity performed under it.",
+          desc: "You must sign in using Google OAuth to access CommentDraw. You are responsible for maintaining the security of your account and any activity performed under it.",
         },
         {
           label: "Age Requirement",
-          desc: "You must be at least 13 years old to use LuckyHub. If you are under 18, you confirm that you have consent from a parent or legal guardian.",
+          desc: "You must be at least 13 years old to use CommentDraw. If you are under 18, you confirm that you have consent from a parent or legal guardian.",
         },
         {
           label: "Accurate Information",
@@ -44,11 +44,11 @@ const TermsOfService = () => {
       content: [
         {
           label: "Plan Availability",
-          desc: "LuckyHub offers Free and paid subscription plans with usage limits based on the number of giveaways and winners selected, as displayed in your dashboard.",
+          desc: "CommentDraw offers Free and paid subscription plans with usage limits based on the number of giveaways and winners selected, as displayed in your dashboard.",
         },
         {
           label: "Billing & Payments",
-          desc: "Paid subscriptions are billed in advance through third-party payment providers. LuckyHub does not store payment card information.",
+          desc: "Paid subscriptions are billed in advance through third-party payment providers. CommentDraw does not store payment card information.",
         },
         {
           label: "Renewals & Cancellation",
@@ -62,22 +62,22 @@ const TermsOfService = () => {
       content: [
         {
           label: "Permitted Purpose",
-          desc: "LuckyHub may only be used to select winners from YouTube comments for legitimate and transparent giveaways.",
+          desc: "CommentDraw may only be used to select winners from YouTube comments for legitimate and transparent giveaways.",
         },
         {
           label: "Compliance",
-          desc: "You agree to comply with YouTube’s Terms of Service, community guidelines, and all applicable laws when using LuckyHub.",
+          desc: "You agree to comply with YouTube’s Terms of Service, community guidelines, and all applicable laws when using CommentDraw.",
         },
         {
           label: "Winner Responsibility",
-          desc: "LuckyHub only selects winners. You are solely responsible for delivering prizes and honoring giveaway commitments.",
+          desc: "CommentDraw only selects winners. You are solely responsible for delivering prizes and honoring giveaway commitments.",
         },
       ],
     },
     {
       icon: <AlertCircle className="w-5 h-5 text-red-500" />,
       title: "Prohibited Activities",
-      desc: "You may not misuse LuckyHub for illegal, misleading, or abusive purposes. This includes attempting to bypass usage limits, manipulating results, scraping the service, reverse-engineering the platform, or automating access beyond intended usage.",
+      desc: "You may not misuse CommentDraw for illegal, misleading, or abusive purposes. This includes attempting to bypass usage limits, manipulating results, scraping the service, reverse-engineering the platform, or automating access beyond intended usage.",
     },
     {
       icon: <Terminal className="w-5 h-5 text-red-500" />,
@@ -85,7 +85,7 @@ const TermsOfService = () => {
       content: [
         {
           label: "YouTube Data Usage",
-          desc: "LuckyHub uses the YouTube Data API to fetch public comments from videos you provide. Comment data is processed temporarily and not permanently stored.",
+          desc: "CommentDraw uses the YouTube Data API to fetch public comments from videos you provide. Comment data is processed temporarily and not permanently stored.",
         },
         {
           label: "Third-Party Services",
@@ -99,11 +99,11 @@ const TermsOfService = () => {
       content: [
         {
           label: "Service Availability",
-          desc: "LuckyHub is provided on an “as-is” and “as-available” basis. We do not guarantee uninterrupted or error-free operation.",
+          desc: "CommentDraw is provided on an “as-is” and “as-available” basis. We do not guarantee uninterrupted or error-free operation.",
         },
         {
           label: "Limitation of Liability",
-          desc: "To the maximum extent permitted by law, LuckyHub shall not be liable for indirect, incidental, or consequential damages. Our total liability shall not exceed the amount paid by you in the preceding 12 months.",
+          desc: "To the maximum extent permitted by law, CommentDraw shall not be liable for indirect, incidental, or consequential damages. Our total liability shall not exceed the amount paid by you in the preceding 12 months.",
         },
       ],
     },
@@ -141,10 +141,10 @@ const TermsOfService = () => {
 
           <div className="mb-8 p-6 rounded-xl border border-zinc-200 dark:border-red-900/30 bg-zinc-50 dark:bg-[#0a0a0a]">
             <h2 className="text-red-500 font-semibold mb-2">
-              Welcome to LuckyHub
+              Welcome to CommentDraw
             </h2>
             <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
-              These Terms govern your access to and use of LuckyHub. By using
+              These Terms govern your access to and use of CommentDraw. By using
               the platform, you agree to comply with these Terms, our Privacy
               Policy, and all applicable third-party terms.
             </p>
@@ -191,7 +191,7 @@ const TermsOfService = () => {
               Questions about these Terms?
             </h3>
             <p className="text-zinc-500 text-sm mb-4 font-mono">
-              support@luckyhub.com
+              support@commentdraw.com
             </p>
             <button
               onClick={() => navigate(-1)}
