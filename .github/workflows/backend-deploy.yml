@@ -36,7 +36,7 @@ jobs:
         with:
           context: ./Backend
           push: true
-          tags: prabhatsingh415/luckyhub-backend:latest
+          tags: mandloideep/commentdraw-backend:latest
 
       - name: Trigger Render Deploy
         run: |
