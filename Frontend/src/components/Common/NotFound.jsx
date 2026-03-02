@@ -75,7 +75,7 @@ const NotFound = () => {
         to="/"
         style={{
           padding: "16px 40px",
-          backgroundColor: "#f97316", // LuckyHub Brand Orange
+          backgroundColor: "#f97316", // CommentDraw Brand Orange
           color: "#ffffff",
           textDecoration: "none",
           borderRadius: "12px",
