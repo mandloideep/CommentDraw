@@ -37,12 +37,12 @@ const Support = () => {
 
   const faqs = [
     {
-      q: "How do I run a giveaway on LuckyHub?",
+      q: "How do I run a giveaway on CommentDraw?",
       a: "Simply paste your YouTube video link, set your preferred filters (like keywords or duplicate handling), and click 'Pick Winner'. The app will fetch comments in real-time.",
     },
     {
       q: "Is the winner selection truly random?",
-      a: "Yes. LuckyHub uses a programmatic randomization algorithm to ensure every eligible comment has an equal chance of winning.",
+      a: "Yes. CommentDraw uses a programmatic randomization algorithm to ensure every eligible comment has an equal chance of winning.",
     },
     {
       q: "How many videos can I process at once?",
@@ -80,7 +80,7 @@ const Support = () => {
             </h2>
             <p className="text-zinc-600 dark:text-zinc-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
               Find answers to common questions or explore the technical side of
-              LuckyHub.
+              CommentDraw.
             </p>
           </div>
 
@@ -150,7 +150,7 @@ const Support = () => {
               Questions about these Terms?
             </h3>
             <p className="text-zinc-500 text-sm mb-4 font-mono">
-              support@luckyhub.com
+              support@commentdraw.com
             </p>
             <button
               onClick={() => navigate(-1)}
