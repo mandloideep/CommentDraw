@@ -1,9 +1,9 @@
-# 🎯 LuckyHub — YouTube Giveaway Picker
+# 🎯 CommentDraw — YouTube Giveaway Picker
 
 ![Spring Boot](https://img.shields.io/badge/Backend-SpringBoot-green)
 ![React](https://img.shields.io/badge/Frontend-React-blue)
 ---
-[![Live Demo](https://img.shields.io/badge/Demo-Live%20Link-brightgreen?style=for-the-badge&logo=vercel)](https://lucky-hub.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20Link-brightgreen?style=for-the-badge&logo=vercel)](https://comment-draw.vercel.app/)
 
 ---
 
@@ -27,7 +27,7 @@ Also:
 
 ## 💡 Solution
 
-LuckyHub solves this using an **automated backend system**:
+CommentDraw solves this using an **automated backend system**:
 
 * Fetches comments from multiple videos
 * Filters duplicate users
@@ -92,8 +92,8 @@ YouTube Data API
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/prabhatsingh415/LuckyHub.git
-cd LuckyHub
+git clone https://github.com/mandloideep/CommentDraw.git
+cd CommentDraw
 ```
 
 ---
@@ -145,10 +145,10 @@ YOUTUBE_API_KEY=${YOUR_API_KEY}
 
 ## 👨‍💻 Author
 
-**Prabhat Singh**
+**Deep Mandloi**
 
-* GitHub: https://github.com/prabhatsingh415
-* LinkedIn: https://www.linkedin.com/in/prabhat-singh-rj415/
+* GitHub: https://github.com/mandloideep
+* LinkedIn: https://www.linkedin.com/in/thedeepmandloi/
 * Portfolio: https://prabhatsingh-two.vercel.app/
 * X(twitter): https://x.com/Prabhatsingh415
 
