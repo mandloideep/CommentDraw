@@ -15,7 +15,7 @@ public class SwaggerConfig {
                         .title("CommentDraw Backend API")
                         .version("1.0")
                         .description("This is the API documentation for CommentDraw backend")
-                        .contact(new Contact().name("Prabhat Singh").email("prabhat@example.com"))
+                        .contact(new Contact().name("Deep Mandloi").email("deep@example.com"))
                 );
     }
 
