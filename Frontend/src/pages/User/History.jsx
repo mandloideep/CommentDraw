@@ -35,21 +35,21 @@ function History() {
   const filteredHistory = history.filter(
     (item) =>
       item.winners.some((w) =>
-        w.toLowerCase().includes(searchTerm.toLowerCase())
+        w.toLowerCase().includes(searchTerm.toLowerCase()),
       ) ||
       item.videoDetails.some((v) =>
-        v.title.toLowerCase().includes(searchTerm.toLowerCase())
+        v.title.toLowerCase().includes(searchTerm.toLowerCase()),
       ) ||
-      item.id.toString().includes(searchTerm)
+      item.id.toString().includes(searchTerm),
   );
 
   const totalWinners = filteredHistory.reduce(
     (acc, curr) => acc + curr.winnersCount,
-    0
+    0,
   );
   const totalComments = filteredHistory.reduce(
     (acc, curr) => acc + curr.commentCount,
-    0
+    0,
   );
 
   const handleExport = () => {
@@ -68,7 +68,7 @@ function History() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `LuckyHub_History.csv`;
+    link.download = `CommentHub_History.csv`;
     link.click();
   };
 
@@ -127,7 +127,10 @@ function History() {
             : "bg-white border-zinc-200 shadow-sm"
         }`}
       >
-        <Search className="text-zinc-500 mr-3" size={20} />
+        <Search
+          className="text-zinc-500 mr-3"
+          size={20}
+        />
         <input
           type="text"
           placeholder="Search by winner handle, video title or ID..."
@@ -275,7 +278,10 @@ const DetailModal = ({ item, onClose, isDark }) => (
       <div className="sticky top-0 z-10 flex items-center justify-between p-6 border-b border-zinc-800/50 bg-inherit/80 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-orange-500/20 rounded-lg">
-            <Trophy size={20} className="text-orange-500" />
+            <Trophy
+              size={20}
+              className="text-orange-500"
+            />
           </div>
           <h2 className="text-xl font-bold">Giveaway Details</h2>
         </div>

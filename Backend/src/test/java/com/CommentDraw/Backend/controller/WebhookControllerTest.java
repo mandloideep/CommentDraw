@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -35,19 +34,19 @@ class WebhookControllerTest {
 
     @Test
     @WithMockUser
-    void handleRazorpayWebhook_ShouldReturnOk() throws Exception {
-        String mockPayload = "{\"event\":\"payment.captured\"}";
-        String mockSignature = "razor_sig_123";
+    void handleStripeWebhook_ShouldReturnOk() throws Exception {
+        String mockPayload = "{\"id\":\"evt_test\",\"type\":\"checkout.session.completed\"}";
+        String mockSignature = "t=1,v1=abc";
 
-        mockMvc.perform(post("/api/webhooks/razorpay")
+        mockMvc.perform(post("/api/webhooks/stripe")
                         .with(csrf())
-                        .header("X-Razorpay-Signature", mockSignature)
+                        .header("Stripe-Signature", mockSignature)
                         .content(mockPayload)
                         .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk())
                         .andExpect(content().string("Received"));
 
 
-        verify(paymentService).processRazorpayWebhook(mockPayload, mockSignature);
+        verify(paymentService).processStripeWebhook(mockPayload, mockSignature);
     }
 }

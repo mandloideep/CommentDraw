@@ -4,8 +4,7 @@ package com.CommentDraw.Backend.controller;
 import com.CommentDraw.Backend.entity.User;
 import com.CommentDraw.Backend.exception.UserNotFoundException;
 import com.CommentDraw.Backend.model.OrderRequest;
-import com.CommentDraw.Backend.model.PaymentVerificationRequest;
-import com.CommentDraw.Backend.model.RazorpayOrderResponse;
+import com.CommentDraw.Backend.model.StripeCheckoutSessionResponse;
 import com.CommentDraw.Backend.service.PaymentService;
 import com.CommentDraw.Backend.service.SubscriptionService;
 import com.CommentDraw.Backend.service.UserService;
@@ -15,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/subscription")
@@ -39,32 +36,8 @@ public class SubscriptionController {
         User user = userService.findUserByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException("User not found !"));
 
-        RazorpayOrderResponse response = paymentService.initializePayment(user, planName);
+        StripeCheckoutSessionResponse response = paymentService.initializePayment(user, planName);
         return ResponseEntity.ok(response);
-    }
-
-
-    @PostMapping("/verifyPayment")
-    public ResponseEntity<?> verifyPayment(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody PaymentVerificationRequest request) {
-        log.info("Verifying payment for order: {}", request.getRazorpay_order_id());
-
-        String email = userDetails.getUsername();
-        User user = userService.findUserByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException("User not found !"));
-
-        boolean isVerified = paymentService.processAndVerify(user, request);
-
-        if (isVerified) {
-            return ResponseEntity.ok(Map.of(
-                    "status", "success",
-                    "message", "Payment successful and subscription activated."
-            ));
-        }
-
-        return ResponseEntity.accepted().body(Map.of(
-                "status", "pending",
-                "message", "Verification pending. Your plan will be active within 5 mins. If the payment fails, a refund will be initiated automatically—check your email for updates."
-        ));
     }
 
     @GetMapping("/lastPayment")

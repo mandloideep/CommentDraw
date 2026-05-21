@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Entity
 @Data
@@ -30,19 +29,24 @@ public class Payment {
     @Column(nullable = false)
     private String currency;
 
+    // Stripe Checkout Session ID (cs_test_...)
     @Column(nullable = false, unique = true)
     private String orderId;
 
+    // Stripe PaymentIntent ID (pi_...)
     @Column(unique = true)
     private String paymentId;
+
+    @Column(unique = true)
+    private String stripeSubscriptionId;
+
+    private String stripeCustomerId;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     @Column(nullable = false, unique = true)
     private String receiptId;
-
-    private boolean signatureVerified;
 
     private LocalDateTime paymentDate;
 

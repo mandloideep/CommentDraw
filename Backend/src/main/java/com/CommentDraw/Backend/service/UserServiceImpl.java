@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService{
     private final OtpService otpService;
     private final CacheManager cacheManager;
 
-    @Value("${ResendTokenUrl}")
-    private String resendVerificationEmailURL;
     @Value("${FRONTEND_BASE_URL}")
     private String baseURL;
 
@@ -193,7 +191,7 @@ public class UserServiceImpl implements UserService{
         // resending Email
         publisher.publishEvent(new ResendVerificationTokenEvent(
                 user,
-                resendVerificationEmailURL,
+                baseURL + "/verify_user",
                 newToken
         ));
     }

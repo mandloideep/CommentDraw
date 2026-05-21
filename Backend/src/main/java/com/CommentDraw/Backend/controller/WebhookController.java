@@ -16,10 +16,10 @@ public class WebhookController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/razorpay")
-    public ResponseEntity<String> handleRazorpayWebhook(@RequestBody String payload,@RequestHeader("X-Razorpay-Signature")String signature){
-        log.info("Webhook request received !");
-        paymentService.processRazorpayWebhook(payload, signature);
+    @PostMapping("/stripe")
+    public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String signature){
+        log.info("Stripe webhook request received!");
+        paymentService.processStripeWebhook(payload, signature);
         return ResponseEntity.ok("Received");
     }
 }

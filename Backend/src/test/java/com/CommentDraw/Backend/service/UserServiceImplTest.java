@@ -56,7 +56,6 @@ class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(userService, "resendVerificationEmailURL", "http://test.com");
         ReflectionTestUtils.setField(userService, "baseURL", "http://frontend.com");
 
         sampleModel = new UserModel();

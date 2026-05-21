@@ -34,7 +34,7 @@ class GoogleAuthControllerTest {
     @Autowired
     private GoogleAuthController googleAuthController;
 
-    private final String mockSuccessUrl = "http://localhost:5173/dashboard";
+    private final String mockSuccessUrl = "http://localhost:5571/dashboard";
 
     @BeforeEach
     void setUp() {

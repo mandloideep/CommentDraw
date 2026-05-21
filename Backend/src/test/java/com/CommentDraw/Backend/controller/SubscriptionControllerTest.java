@@ -44,51 +44,24 @@ class SubscriptionControllerTest {
         when(userService.findUserByEmail(testEmail)).thenReturn(Optional.of(mockUser));
     }
 
-    // Verifies Razorpay order initialization
     @Test
     @WithMockUser(username = testEmail)
-    void proceedPayment_ShouldReturnOrderDetails() throws Exception {
-        RazorpayOrderResponse mockResponse = RazorpayOrderResponse.builder().build();
+    void proceedPayment_ShouldReturnCheckoutSession() throws Exception {
+        StripeCheckoutSessionResponse mockResponse = StripeCheckoutSessionResponse.builder()
+                .sessionId("cs_test_123")
+                .url("https://checkout.stripe.com/c/pay/cs_test_123")
+                .build();
         when(paymentService.initializePayment(any(User.class), eq("GOLD"))).thenReturn(mockResponse);
 
         mockMvc.perform(post("/subscription/createOrder")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"planName\":\"gold\"}"))
-                        .andExpect(status().isOk());
-    }
-
-    // Verify Payment
-    @Test
-    @WithMockUser(username = testEmail)
-    void verifyPayment_ShouldReturnSuccess_WhenVerified() throws Exception {
-        when(paymentService.processAndVerify(any(User.class), any(PaymentVerificationRequest.class)))
-                .thenReturn(true);
-
-        mockMvc.perform(post("/subscription/verifyPayment")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"razorpay_order_id\":\"ord_123\", \"razorpay_payment_id\":\"pay_123\", \"razorpay_signature\":\"sig_123\"}"))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$.status").value("success"));
+                        .andExpect(jsonPath("$.sessionId").value("cs_test_123"))
+                        .andExpect(jsonPath("$.url").value("https://checkout.stripe.com/c/pay/cs_test_123"));
     }
 
-    // Verify Payment (Pending/Fail)
-    @Test
-    @WithMockUser(username = testEmail)
-    void verifyPayment_ShouldReturnPending_WhenNotImmediatelyVerified() throws Exception {
-        when(paymentService.processAndVerify(any(User.class), any(PaymentVerificationRequest.class)))
-                .thenReturn(false);
-
-        mockMvc.perform(post("/subscription/verifyPayment")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"razorpay_order_id\":\"ord_123\", \"razorpay_payment_id\":\"pay_123\", \"razorpay_signature\":\"sig_123\"}"))
-                        .andExpect(status().isAccepted()) // Check for 202 status
-                        .andExpect(jsonPath("$.status").value("pending"));
-    }
-
-    // Get Subscription
     @Test
     @WithMockUser(username = testEmail)
     void getSubscription_ShouldReturnUserSub() throws Exception {

@@ -13,7 +13,9 @@ import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByOrderId(String orderId);
+    Optional<Payment> findByStripeSubscriptionId(String stripeSubscriptionId);
     Payment findByPaymentId(String paymentId);
+
     @Transactional
     @Modifying
     void deleteByUserIdAndStatusAndIdNot(Long userId, PaymentStatus status, Long id);
@@ -30,6 +32,3 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("DELETE FROM Payment p WHERE p.userId = :userId")
     void deleteByUserId(long userId);
 }
-
-
-

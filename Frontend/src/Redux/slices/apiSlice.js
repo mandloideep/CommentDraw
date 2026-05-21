@@ -124,15 +124,6 @@ export const apiSlice = createApi({
       providesTags: ["Subscription"],
     }),
 
-    verifyPayment: builder.mutation({
-      query: (paymentData) => ({
-        url: "/subscription/verifyPayment",
-        method: "POST",
-        body: paymentData,
-      }),
-      providesTags: ["Subscription"],
-    }),
-
     logout: builder.mutation({
       query: () => ({
         url: "/user/logout",
@@ -173,7 +164,6 @@ export const {
   useGetWinnersMutation,
   useGetSubscriptionQuery,
   useCreateOrderMutation,
-  useVerifyPaymentMutation,
   useLogoutMutation,
   useRequestDeleteOTPMutation,
   useConfirmDeleteMutation,
