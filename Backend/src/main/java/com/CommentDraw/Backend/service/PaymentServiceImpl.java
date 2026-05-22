@@ -219,54 +219,79 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void handleCheckoutCompleted(Event event) {
-        Session session = (Session) event.getDataObjectDeserializer().getObject()
-                .orElseThrow(() -> new PaymentGatewayException("Could not deserialize Stripe session"));
+        Session session;
+        try {
+            session = (Session) event.getDataObjectDeserializer().getObject()
+                    .orElseThrow(() -> new PaymentGatewayException("Could not deserialize Stripe session"));
+        } catch (Exception e) {
+            log.error("Webhook Error: failed to deserialize session for event {}: {}", event.getId(), e.getMessage());
+            return;
+        }
 
         String sessionId = session.getId();
-        Payment payment = paymentRepo.findByOrderId(sessionId)
-                .orElseThrow(() -> new PaymentNotFoundException("Payment not found for session " + sessionId));
+        Payment payment;
+        try {
+            payment = paymentRepo.findByOrderId(sessionId)
+                    .orElseThrow(() -> new PaymentNotFoundException("Payment not found for session " + sessionId));
+        } catch (PaymentNotFoundException e) {
+            log.warn("Webhook: no Payment row for session {} (may be a Stripe-side test event). Ignoring.", sessionId);
+            return;
+        }
 
         if (PaymentStatus.SUCCESS == payment.getStatus()) {
             log.info("Session {} already processed. Skipping.", sessionId);
             return;
         }
 
-        payment.setStripeCustomerId(session.getCustomer());
-        payment.setStripeSubscriptionId(session.getSubscription());
-        paymentRepo.save(payment);
-
         long amountTotalCents = session.getAmountTotal() != null ? session.getAmountTotal() : 0L;
         BigDecimal amountInMajor = BigDecimal.valueOf(amountTotalCents)
                 .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
-        User user;
+        // Plan to activate is the one the user clicked, recorded in createPartialPayment.
+        SubscriptionTypes planType = payment.getPlanType();
+        User user = null;
+
         try {
+            payment.setStripeCustomerId(session.getCustomer());
+            payment.setStripeSubscriptionId(session.getSubscription());
+            paymentRepo.save(payment);
+
             user = userService.findUserByUserId(payment.getUserId());
-        } catch (Exception e) {
-            log.error("User lookup failed for session {}: {}", sessionId, e.getMessage());
-            this.markPaymentFailed(sessionId);
-            return;
-        }
 
-        SubscriptionTypes planByAmount = subscriptionService.getPlanByAmount(amountInMajor);
+            // Sanity-check: warn (don't fail) if Stripe charged an amount that doesn't match the enum.
+            try {
+                SubscriptionTypes planByAmount = subscriptionService.getPlanByAmount(amountInMajor);
+                if (planByAmount != planType) {
+                    log.warn("Webhook: amount-derived plan {} ({}) does not match recorded plan {} for session {}",
+                            planByAmount, amountInMajor, planType, sessionId);
+                }
+            } catch (Exception e) {
+                log.warn("Webhook: amount {} does not match any plan price for session {} ({}). Proceeding with recorded plan {}.",
+                        amountInMajor, sessionId, e.getMessage(), planType);
+            }
 
-        try {
             String paymentIntentId = session.getPaymentIntent();
             String paymentMethod = session.getPaymentMethodTypes() != null && !session.getPaymentMethodTypes().isEmpty()
                     ? session.getPaymentMethodTypes().get(0)
                     : "card";
-            this.completePayment(sessionId, paymentIntentId, LocalDateTime.now(), user, planByAmount.toString(), amountInMajor, paymentMethod);
+            this.completePayment(sessionId, paymentIntentId, LocalDateTime.now(), user, planType.toString(), amountInMajor, paymentMethod);
             log.info("Webhook Success: Subscription activated for session {}", sessionId);
         } catch (Exception e) {
-            log.error("Webhook Error: Completion failed for {}. Reason: {}", sessionId, e.getMessage());
-            this.markPaymentFailed(sessionId);
-            publisher.publishEvent(new PaymentRefundEvent(
-                    user,
-                    planByAmount.toString(),
-                    sessionId,
-                    amountInMajor
-            ));
-            log.info("Webhook Error: Payment Refund mail sent for user {}", user);
+            log.error("Webhook Error: Completion failed for {}. Reason: {}", sessionId, e.getMessage(), e);
+            try {
+                this.markPaymentFailed(sessionId);
+            } catch (Exception markEx) {
+                log.error("Webhook Error: also failed to mark payment FAILED for {}: {}", sessionId, markEx.getMessage());
+            }
+            if (user != null) {
+                publisher.publishEvent(new PaymentRefundEvent(
+                        user,
+                        planType.toString(),
+                        sessionId,
+                        amountInMajor
+                ));
+                log.info("Webhook Error: Payment Refund mail sent for user {}", user.getEmail());
+            }
         }
     }
 

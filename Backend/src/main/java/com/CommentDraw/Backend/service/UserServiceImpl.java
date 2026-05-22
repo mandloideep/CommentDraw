@@ -106,6 +106,8 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UserNotFoundException("Invalid email or password"));
 
+        log.info("Login attempt: email={} isVerified={}", email, user.isVerified());
+
         if (!user.isVerified()) {
             VerificationToken token = verificationTokenService.findVerificationTokenByUser(user)
                     .orElseThrow(() -> new VerificationTokenNotFoundException("Verification not found!"));

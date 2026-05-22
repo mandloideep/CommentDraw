@@ -1,5 +1,6 @@
 package com.CommentDraw.Backend.service;
 
+import com.CommentDraw.Backend.exception.EmailSendingFailedException;
 import com.CommentDraw.Backend.model.MailType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,16 +28,16 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(String to, String subject, String body, MailType type) {
-        executeRequest(to, subject, body, type);
+        executeRequest(to, subject, body, type, true);
     }
 
     @Override
     @Async
     public void sendAsyncEmail(String to, String subject, String body, MailType type) {
-        executeRequest(to, subject, body, type);
+        executeRequest(to, subject, body, type, false);
     }
 
-    private void executeRequest(String to, String subject, String content, MailType type) {
+    private void executeRequest(String to, String subject, String content, MailType type, boolean throwOnFailure) {
         log.info("[BREVO-REST] Sending {} email to: {}", type, to);
 
         String htmlBody = generateHtmlTemplate(subject, content, type);
@@ -59,11 +60,20 @@ public class EmailServiceImpl implements EmailService {
             if (response.isSuccessful()) {
                 log.info("[BREVO-SUCCESS] Email sent! Status: {}", response.code());
             } else {
-                log.error("[BREVO-ERROR] Code: {}, Msg: {}", response.code(),
-                        response.body() != null ? response.body().string() : "No response body");
+                String responseBody = response.body() != null ? response.body().string() : "No response body";
+                log.error("[BREVO-ERROR] Code: {}, Msg: {}", response.code(), responseBody);
+                if (throwOnFailure) {
+                    throw new EmailSendingFailedException(
+                            "Brevo returned HTTP " + response.code() + " for " + type + " to " + to,
+                            null
+                    );
+                }
             }
         } catch (IOException e) {
             log.error("[BREVO-CRITICAL] Network Error: {}", e.getMessage());
+            if (throwOnFailure) {
+                throw new EmailSendingFailedException("Network error contacting Brevo for " + type + " to " + to, e);
+            }
         }
     }
 

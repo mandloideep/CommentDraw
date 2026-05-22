@@ -37,6 +37,17 @@ export default function Settings() {
     }
   }, [location, dashboardLoading]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (!params.get("session_id")) return;
+
+    // Stripe redirected us back after a successful checkout. The webhook may not have
+    // fired yet, so poll the dashboard a few times before giving up.
+    const delays = [1000, 3000, 6000];
+    const timers = delays.map((d) => setTimeout(() => refetchDashboard(), d));
+    return () => timers.forEach(clearTimeout);
+  }, [location.search, refetchDashboard]);
+
   if (dashboardLoading) return <Loader />;
 
   if (dashboardError) {

@@ -29,7 +29,7 @@ const subscriptionPlan = [
   {
     id: 3,
     name: "DIAMOND",
-    price: "$19",
+    price: "$29",
     description: "Unlimited draws for high-volume creators.",
     features: [
       "Unlimited giveaways",

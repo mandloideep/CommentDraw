@@ -97,12 +97,20 @@ function SignIn() {
       {isError && (
         <InfoModal
           isOpen={true}
-          type="error"
-          title={resendAttempts >= 3 ? "Limit reached" : "Sign in failed"}
+          type={error?.data?.status === "UNVERIFIED" ? "info" : "error"}
+          title={
+            resendAttempts >= 3
+              ? "Limit reached"
+              : error?.data?.status === "UNVERIFIED"
+              ? "Email not verified"
+              : "Sign in failed"
+          }
           isContainsResendBtn={error?.data?.status === "UNVERIFIED"}
           message={
             resendAttempts >= 3
               ? "Maximum attempts reached. Try again tomorrow."
+              : error?.data?.status === "UNVERIFIED"
+              ? "This account hasn't been verified yet. Check your inbox for the verification link, or tap below to send a new one."
               : error?.data?.message || "Something went wrong."
           }
           okText={error?.data?.status === "UNVERIFIED" ? "Open Gmail" : "Try again"}

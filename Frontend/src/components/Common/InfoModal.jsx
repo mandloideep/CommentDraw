@@ -26,7 +26,7 @@ export default function InfoModal({
   onOk,
   onCancel,
   redirectUrl = null,
-  isContainsResendBtn = true,
+  isContainsResendBtn = false,
   userEmail = "",
 }) {
   if (!isOpen) return null;
