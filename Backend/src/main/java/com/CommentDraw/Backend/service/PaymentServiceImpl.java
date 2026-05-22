@@ -209,12 +209,18 @@ public class PaymentServiceImpl implements PaymentService {
         String type = event.getType();
         log.info("Stripe webhook received: {}", type);
 
-        switch (type) {
-            case "checkout.session.completed" -> handleCheckoutCompleted(event);
-            case "checkout.session.expired", "checkout.session.async_payment_failed" -> handleCheckoutFailed(event);
-            case "invoice.paid" -> log.info("invoice.paid received — recurring renewal not yet implemented");
-            case "customer.subscription.deleted" -> log.info("customer.subscription.deleted received");
-            default -> log.info("Unhandled Stripe event type: {}", type);
+        try {
+            switch (type) {
+                case "checkout.session.completed" -> handleCheckoutCompleted(event);
+                case "checkout.session.expired", "checkout.session.async_payment_failed" -> handleCheckoutFailed(event);
+                case "invoice.paid" -> log.info("invoice.paid received — recurring renewal not yet implemented");
+                case "customer.subscription.deleted" -> log.info("customer.subscription.deleted received");
+                default -> log.info("Unhandled Stripe event type: {}", type);
+            }
+        } catch (Exception e) {
+            // Signature was already verified above. Swallow handler failures so Stripe sees 2xx
+            // and the reconcileStuckPayments cron becomes the safety net rather than Stripe retries.
+            log.error("Webhook handler threw for event {} ({}): {}", event.getId(), type, e.getMessage(), e);
         }
     }
 
@@ -224,7 +230,7 @@ public class PaymentServiceImpl implements PaymentService {
             session = (Session) event.getDataObjectDeserializer().getObject()
                     .orElseThrow(() -> new PaymentGatewayException("Could not deserialize Stripe session"));
         } catch (Exception e) {
-            log.error("Webhook Error: failed to deserialize session for event {}: {}", event.getId(), e.getMessage());
+            log.error("Webhook Error: failed to deserialize session for event {}: {}", event.getId(), e.getMessage(), e);
             return;
         }
 

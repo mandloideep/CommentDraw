@@ -7,12 +7,15 @@ import {
   X,
   Sun,
   Moon,
+  LogOut,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../../Redux/slices/themeSlice";
 import { useState } from "react";
-import { Logo } from "../Common";
+import { Logo, InfoModal } from "../Common";
+import CautionModal from "../Settings/CautionModal";
+import { useLogout } from "./hooks/useLogout";
 
 const menuItems = [
   { label: "Home", to: "/home", Icon: House },
@@ -57,6 +60,14 @@ function AppHeader({ navigationLocked }) {
   const theme = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [confirmLogoutOpen, setConfirmLogoutOpen] = useState(false);
+  const [logoutErrorOpen, setLogoutErrorOpen] = useState(false);
+  const { logout } = useLogout({ onError: () => setLogoutErrorOpen(true) });
+
+  const openLogoutConfirm = () => {
+    setIsMenuOpen(false);
+    setConfirmLogoutOpen(true);
+  };
 
   const SidebarContent = (
     <div className="flex flex-col h-full bg-paper dark:bg-ink">
@@ -81,13 +92,20 @@ function AppHeader({ navigationLocked }) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+      <div className="p-4 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] flex flex-col gap-2">
         <button
           onClick={() => dispatch(toggleTheme())}
           className="w-full h-11 flex items-center justify-center gap-2 border-2 border-ink dark:border-paper bg-transparent hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink font-mono text-[10px] uppercase tracking-[0.18em] transition-colors cursor-pointer"
         >
           {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
           <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+        </button>
+        <button
+          onClick={openLogoutConfirm}
+          className="w-full h-11 flex items-center justify-center gap-2 border-2 border-[var(--color-punch)] text-[var(--color-punch)] bg-transparent hover:bg-[var(--color-punch)] hover:text-paper font-mono text-[10px] uppercase tracking-[0.18em] transition-colors cursor-pointer"
+        >
+          <LogOut size={14} />
+          <span>Logout</span>
         </button>
       </div>
     </div>
@@ -106,13 +124,22 @@ function AppHeader({ navigationLocked }) {
           </button>
           <Logo size={20} />
         </div>
-        <button
-          onClick={() => dispatch(toggleTheme())}
-          aria-label="Toggle theme"
-          className="h-9 w-9 grid place-items-center text-mute hover:text-[var(--color-punch)]"
-        >
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => dispatch(toggleTheme())}
+            aria-label="Toggle theme"
+            className="h-9 w-9 grid place-items-center text-mute hover:text-[var(--color-punch)]"
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+          <button
+            onClick={openLogoutConfirm}
+            aria-label="Logout"
+            className="h-9 w-9 grid place-items-center text-mute hover:text-[var(--color-punch)]"
+          >
+            <LogOut size={16} />
+          </button>
+        </div>
       </header>
 
       <div className="relative">
@@ -146,6 +173,30 @@ function AppHeader({ navigationLocked }) {
           onClick={() => setIsMenuOpen(false)}
         />
       )}
+
+      <CautionModal
+        isOpen={confirmLogoutOpen}
+        onClose={() => setConfirmLogoutOpen(false)}
+        onConfirm={() => {
+          setConfirmLogoutOpen(false);
+          logout();
+        }}
+        data={{
+          title: "Confirm logout",
+          message: "Sign out from CommentDraw on this device?",
+          confirmText: "Logout",
+          isDangerous: false,
+        }}
+      />
+
+      <InfoModal
+        isOpen={logoutErrorOpen}
+        title="Logout Failed"
+        message="Could not log you out. Please try again."
+        type="error"
+        okText="OK"
+        onOk={() => setLogoutErrorOpen(false)}
+      />
     </>
   );
 }

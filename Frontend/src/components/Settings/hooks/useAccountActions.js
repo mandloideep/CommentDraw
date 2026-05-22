@@ -2,14 +2,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   apiSlice,
-  useLogoutMutation,
   useConfirmDeleteMutation,
   useRequestDeleteOTPMutation,
 } from "../../../Redux/slices/apiSlice";
 
 export const useAccountActions = (setModal) => {
   const dispatch = useDispatch();
-  const [logoutApi] = useLogoutMutation();
   const [showCaution, setShowCaution] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
 
@@ -21,23 +19,6 @@ export const useAccountActions = (setModal) => {
   const closeModals = () => {
     setShowCaution(false);
     setShowOtpModal(false);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logoutApi().unwrap();
-      dispatch(apiSlice.util.resetApiState());
-
-      localStorage.clear();
-      window.location.href = "/";
-    } catch (err) {
-      setModal({
-        open: true,
-        title: "Logout Failed",
-        message: "Could not log you out. Please try again.",
-        type: "error",
-      });
-    }
   };
 
   const handleCautionConfirm = async () => {
@@ -74,7 +55,6 @@ export const useAccountActions = (setModal) => {
   };
 
   return {
-    handleLogout,
     triggerDelete,
     handleCautionConfirm,
     handleVerifyOTP,

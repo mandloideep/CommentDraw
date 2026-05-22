@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { User, LogOut, Trash2 } from "lucide-react";
+import { User, Trash2 } from "lucide-react";
 import { useAccountActions } from "./hooks/useAccountActions";
 import CautionModal from "./CautionModal";
 import OTPVerificationModal from "./OTPVerificationModal";
 
 function AccountActionsSection({ setModal }) {
   const {
-    handleLogout,
     handleCautionConfirm,
     handleVerifyOTP,
     closeModals,
@@ -25,23 +24,6 @@ function AccountActionsSection({ setModal }) {
     setCautionModal((prev) => ({ ...prev, isOpen: false }));
 
   const actions = [
-    {
-      title: "Logout",
-      description: "Sign out from your account on this device.",
-      Icon: LogOut,
-      onClick: () =>
-        setCautionModal({
-          isOpen: true,
-          onClose: closeModals,
-          onConfirm: handleLogout,
-          data: {
-            title: "Confirm logout",
-            message: "Sign out from CommentDraw on this device?",
-            confirmText: "Logout",
-            isDangerous: false,
-          },
-        }),
-    },
     {
       title: "Delete account",
       description: "Permanently delete your account and all associated data.",
@@ -79,7 +61,7 @@ function AccountActionsSection({ setModal }) {
           Account actions
         </h2>
         <p className="text-sm text-mute mb-8">
-          Sign out or permanently delete your account.
+          Permanently delete your account and all associated data.
         </p>
 
         <div className="flex flex-col">
