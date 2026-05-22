@@ -1,107 +1,129 @@
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 
-const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+const faqData = [
+  {
+    question: "How does CommentDraw select giveaway winners?",
+    answer:
+      "We fetch comments via the official YouTube Data API, deduplicate by commenter, then run a uniform random draw across the qualifying pool. No manual interference, no weighting.",
+  },
+  {
+    question: "Does CommentDraw need my YouTube password?",
+    answer:
+      "Never. We sign you in with Google OAuth and only request the read-only comments scope. Your password never reaches us — that's by design.",
+  },
+  {
+    question: "Can I filter comments using keywords?",
+    answer:
+      "Yes. Add one or more keywords before drawing and only comments containing them will enter the pool. Filtering happens before deduplication.",
+  },
+  {
+    question: "Can CommentDraw pick multiple winners?",
+    answer:
+      "Yes. Choose how many winners you want — up to 10 on Diamond — and we return a single set of unique winners in one draw.",
+  },
+  {
+    question: "Can I draw across multiple YouTube videos?",
+    answer:
+      "Yes. Add up to 3 URLs and we'll pool comments across all of them for the draw.",
+  },
+  {
+    question: "Is there a usage limit?",
+    answer:
+      "Yes — limits depend on plan. Free covers casual draws; Gold and Diamond expand monthly giveaways, comment counts, and winners per draw.",
+  },
+  {
+    question: "How does subscription tracking work?",
+    answer:
+      "Your dashboard shows giveaways and winners used in the current cycle, and the remaining quota updates in real time.",
+  },
+  {
+    question: "Can I view my previous giveaways and payments?",
+    answer:
+      "Yes. Past draws and your last payment are available from the dashboard at any time.",
+  },
+];
 
-  const toggleAccordion = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  const faqData = [
-    {
-      question: "How does CommentDraw select giveaway winners?",
-      answer:
-        "CommentDraw fetches comments directly using the official YouTube Data API and selects winners programmatically based on your inputs (number of winners, videos provided, and optional keyword filters). The process is fully automated with no manual interference.",
-    },
-    {
-      question: "Does CommentDraw require access to my YouTube password?",
-      answer:
-        "No. CommentDraw uses Google OAuth and official YouTube APIs. We never ask for your YouTube password and only request the minimum read-only permissions needed to fetch comments.",
-    },
-    {
-      question: "Can I filter comments using keywords?",
-      answer:
-        "Yes. You can apply keyword-based filtering so only comments containing specific words are considered during winner selection.",
-    },
-    {
-      question: "Can CommentDraw pick multiple winners?",
-      answer:
-        "Yes. You can choose how many winners you want according to your plan, and CommentDraw will generate a list of unique winners in a single selection process.",
-    },
-    {
-      question: "Can I select winners from multiple YouTube videos?",
-      answer:
-        "Yes. CommentDraw allows you to add upto 3 multiple YouTube video links and selects winners by processing comments across all provided videos.",
-    },
-    {
-      question: "Is there a limit on how many giveaways I can run?",
-      answer:
-        "Yes. Giveaway limits depend on your subscription plan. Free users have limited monthly usage, while higher-tier plans offer increased or unlimited winner selections.",
-    },
-    {
-      question: "How does subscription tracking work?",
-      answer:
-        "CommentDraw tracks how many giveaways and winners you have selected during the current subscription cycle and updates your remaining quota in real time.",
-    },
-    {
-      question: "Can I view my previous giveaway or payment details?",
-      answer:
-        "Yes. CommentDraw stores your giveaway activity and last payment details, which you can view anytime from your dashboard.",
-    },
-  ];
-
+function FAQItem({ faq, isOpen, onToggle, index }) {
   return (
-    <div className="min-h-screen bg-white text-zinc-900 dark:bg-black dark:text-white py-16 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
-      <div className="max-w-3xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-zinc-600 dark:text-zinc-400 text-sm md:text-base">
-            Answers to common questions about CommentDraw
-          </p>
+    <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+      <button
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="w-full flex items-center justify-between gap-4 py-6 text-left group cursor-pointer"
+      >
+        <div className="flex items-baseline gap-5">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-punch)]">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <span className="font-display text-lg sm:text-xl font-medium tracking-[-0.01em] pr-4 group-hover:text-[var(--color-punch)] transition-colors">
+            {faq.question}
+          </span>
         </div>
-
-        {/* Accordion Section */}
-        <div className="space-y-4">
-          {faqData.map((faq, index) => (
-            <div
-              key={index}
-              className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden transition-all duration-300 bg-zinc-50 dark:bg-[#0a0a0a]"
-            >
-              <button
-                onClick={() => toggleAccordion(index)}
-                className="w-full flex justify-between items-center p-5 text-left hover:bg-zinc-100 dark:hover:bg-zinc-900/50 transition-colors"
-              >
-                <span className="text-sm md:text-base font-semibold pr-4">
-                  {faq.question}
-                </span>
-                <ChevronDown
-                  className={`w-5 h-5 text-red-600 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              <div
-                className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                  openIndex === index
-                    ? "max-h-60 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="p-5 pt-0 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed border-t border-zinc-200 dark:border-zinc-800/50 mt-2">
-                  {faq.answer}
-                </div>
-              </div>
-            </div>
-          ))}
+        {isOpen ? (
+          <Minus size={20} strokeWidth={2} className="shrink-0" />
+        ) : (
+          <Plus size={20} strokeWidth={2} className="shrink-0" />
+        )}
+      </button>
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <p className="text-sm sm:text-base text-mute leading-relaxed pb-6 pl-11 max-w-3xl">
+            {faq.answer}
+          </p>
         </div>
       </div>
     </div>
   );
-};
+}
+
+function FAQ() {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  return (
+    <section
+      id="faq"
+      className="w-full border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+    >
+      <div className="px-5 sm:px-8 lg:px-12 py-20 sm:py-28">
+        <div className="grid lg:grid-cols-12 gap-y-10 lg:gap-x-12 mb-12">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">05</span> / FAQ
+            </p>
+          </div>
+          <div className="lg:col-span-9">
+            <h2
+              className="font-display font-semibold leading-[0.95] tracking-[-0.04em] max-w-2xl"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+            >
+              Common questions
+              <span className="text-[var(--color-punch)]">.</span>
+            </h2>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-12 lg:gap-x-12">
+          <div className="lg:col-span-3" />
+          <div className="lg:col-span-9 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+            {faqData.map((faq, index) => (
+              <FAQItem
+                key={index}
+                faq={faq}
+                index={index}
+                isOpen={openIndex === index}
+                onToggle={() => setOpenIndex(openIndex === index ? null : index)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default FAQ;

@@ -1,48 +1,45 @@
 import { useNavigate } from "react-router-dom";
 import { PlanCard } from "../Common";
-import { CircleStar, Gem, Gift } from "lucide-react";
 
 const subscriptionPlan = [
   {
     id: 1,
-    icon: <Gift />,
     name: "FREE",
-    price: "₹0",
-    description: "Perfect for getting started with giveaways",
+    price: "$0",
+    description: "Get a feel for fair draws — no card needed.",
     features: [
       "3 giveaways per month",
-      "Up to 300 comments",
-      "2 winner per giveaway",
+      "Up to 300 comments per draw",
+      "2 winners per giveaway",
     ],
-    cta: "Start Free",
+    cta: "Start free",
   },
   {
     id: 2,
-    icon: <CircleStar />,
     name: "GOLD",
-    price: "₹49",
-    description: "Ideal for frequent organizers with advanced features",
+    price: "$9",
+    description: "For regulars who run a draw most weeks.",
     features: [
       "10 giveaways per month",
-      "Up to 600 comments",
+      "Up to 600 comments per draw",
       "Up to 5 winners per giveaway",
     ],
     cta: "Go Gold",
   },
   {
     id: 3,
-    icon: <Gem />,
     name: "DIAMOND",
-    price: "₹79",
-    description: "Unlimited giveaways and top-tier features for pros",
+    price: "$19",
+    description: "Unlimited draws for high-volume creators.",
     features: [
       "Unlimited giveaways",
-      "1000 comments",
+      "Up to 1,000 comments per draw",
       "10 winners per giveaway",
     ],
     cta: "Go Diamond",
   },
 ];
+
 function Subscription() {
   const navigate = useNavigate();
 
@@ -56,28 +53,43 @@ function Subscription() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-8 gap-12 dark:text-white my-8">
-      <div className="w-full flex flex-col justify-center items-center gap-4 mb-8">
-        <h2 className="text-3xl sm:text-4xl font-semibold text-center leading-tight">
-          Choose Your Perfect Plan
-        </h2>
+    <section
+      id="pricing"
+      className="w-full border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+    >
+      <div className="px-5 sm:px-8 lg:px-12 py-20 sm:py-28">
+        <div className="grid lg:grid-cols-12 gap-y-10 lg:gap-x-12 mb-16">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">04</span> / Pricing
+            </p>
+          </div>
+          <div className="lg:col-span-9 flex flex-col gap-4">
+            <h2
+              className="font-display font-semibold leading-[0.95] tracking-[-0.04em] max-w-3xl"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+            >
+              Free to start. Cheap to scale
+              <span className="text-[var(--color-punch)]">.</span>
+            </h2>
+            <p className="text-base sm:text-lg text-mute max-w-2xl">
+              All plans include the same fair draw engine. The price is for volume — pick
+              what matches your audience.
+            </p>
+          </div>
+        </div>
 
-        <div className="w-full flex flex-col items-center justify-center">
-          <p className="text-sm sm:text-xl text-[#a1a1a1] text-center max-w-md">
-            Start for free and upgrade as your giveaway needs grow. All plans
-            include
-          </p>
-          <p className="text-sm sm:text-xl text-[#a1a1a1] text-center max-w-md">
-            fair winner selection.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+          {subscriptionPlan.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              onClick={() => handleClick(plan.name)}
+            />
+          ))}
         </div>
       </div>
-      <div className="flex flex-wrap justify-center items-stretch gap-8 w-full max-w-6xl">
-        {subscriptionPlan.map((plan) => (
-          <PlanCard onClick={() => handleClick(plan.name)} plan={plan} />
-        ))}
-      </div>
-    </div>
+    </section>
   );
 }
 

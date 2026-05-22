@@ -12,7 +12,33 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const PUNCH = "#FF3D1F";
+const PUNCH_2 = "#0030FF";
+
+function ChartPanel({ index, title, subtitle, children, isEmpty }) {
+  return (
+    <div className="border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] p-5 flex flex-col gap-4">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute mb-2">
+            <span className="text-[var(--color-punch)]">{index}</span> / {title}
+          </p>
+          <p className="text-xs text-mute">{subtitle}</p>
+        </div>
+      </div>
+      {isEmpty ? (
+        <div className="w-full h-56 flex items-center justify-center border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-4">
+          <p className="text-sm text-mute">Run a draw to populate this chart.</p>
+        </div>
+      ) : (
+        <div className="w-full h-56">{children}</div>
+      )}
+    </div>
+  );
+}
+
 function GiveawayInsights() {
+  const theme = useSelector((state) => state.theme.mode);
   const { accessToken } = useSelector((state) => state.auth);
 
   const { data: historyData } = useHistoryQuery(undefined, {
@@ -29,132 +55,104 @@ function GiveawayInsights() {
       }))
     : [];
 
-  const brandOrange = "#ff4d29";
+  const axisColor = theme === "dark" ? "#8a8a8a" : "#8a8a8a";
+  const gridColor = theme === "dark" ? "#1f1f1d" : "#e6e6e1";
+  const tooltipBg = theme === "dark" ? "#0a0a0a" : "#fafaf7";
+  const tooltipText = theme === "dark" ? "#fafaf7" : "#0a0a0a";
 
   return (
-    <div className="w-full lg:flex-1 flex flex-col border-2 border-zinc-200 dark:border-zinc-800 rounded-xl gap-8 p-4">
-      {/* Heading */}
-      <div className="flex items-center gap-2">
-        <h2 className="text-lg font-semibold dark:text-white">
-          Giveaway Performance Insights
-        </h2>
+    <div className="w-full border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] p-6 flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+          <span className="text-[var(--color-punch)]">03</span> / Insights
+        </p>
       </div>
 
-      <div className="flex-1 flex flex-col border border-zinc-300 dark:border-zinc-700 rounded-xl p-4">
-        <h3 className="font-medium text-gray-900 dark:text-white text-base">
-          Winners Picked Over Time
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Daily / Weekly breakdown
-        </p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartPanel
+          index="A"
+          title="Winners over time"
+          subtitle="Per giveaway run"
+          isEmpty={chartData.length === 0}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData}>
+              <CartesianGrid stroke={gridColor} vertical={false} />
+              <XAxis
+                dataKey="date"
+                stroke={axisColor}
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke={axisColor}
+                domain={[0, "auto"]}
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+                allowDecimals={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: tooltipBg,
+                  border: `1px solid ${gridColor}`,
+                  color: tooltipText,
+                  fontFamily: "JetBrains Mono, monospace",
+                  fontSize: 11,
+                  borderRadius: 0,
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="winnersCount"
+                stroke={PUNCH}
+                strokeWidth={2}
+                dot={{ r: 3, fill: PUNCH, strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: PUNCH, strokeWidth: 0 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartPanel>
 
-        {chartData.length !== 0 ? (
-          <div className="w-full h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#374151"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="date"
-                  stroke={brandOrange}
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke={brandOrange}
-                  domain={[0, "auto"]}
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  allowDecimals={false}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#111827",
-                    borderRadius: "12px",
-                    color: "#fff",
-                    border: "1px solid #374151",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="winnersCount"
-                  stroke={brandOrange}
-                  strokeWidth={3}
-                  dot={{ r: 4, fill: brandOrange, strokeWidth: 2 }}
-                  activeDot={{ r: 6, strokeWidth: 0 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="w-full h-64 flex items-center justify-center">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No giveaway history found. Run a giveaway to see insights here.
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="flex-1 flex flex-col border border-zinc-300 dark:border-zinc-700 rounded-xl p-4">
-        <h3 className="font-medium text-gray-900 dark:text-white text-base">
-          Comments Analyzed per Giveaway
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          How many comments you processed
-        </p>
-        {chartData.length !== 0 ? (
-          <div className="w-full h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#374151"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="date"
-                  stroke={brandOrange}
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke={brandOrange}
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  allowDecimals={false}
-                />
-                <Tooltip
-                  cursor={{ fill: "rgba(255, 77, 41, 0.1)" }}
-                  contentStyle={{
-                    backgroundColor: "#111827",
-                    borderRadius: "12px",
-                    color: "#fff",
-                    border: "1px solid #374151",
-                  }}
-                />
-                <Bar
-                  dataKey="commentCount"
-                  fill={brandOrange}
-                  barSize={32}
-                  radius={[6, 6, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="w-full h-64 flex items-center justify-center">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No giveaway history found. Run a giveaway to see insights here.
-            </p>
-          </div>
-        )}
+        <ChartPanel
+          index="B"
+          title="Comments analyzed"
+          subtitle="Per giveaway run"
+          isEmpty={chartData.length === 0}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid stroke={gridColor} vertical={false} />
+              <XAxis
+                dataKey="date"
+                stroke={axisColor}
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                stroke={axisColor}
+                fontSize={10}
+                tickLine={false}
+                axisLine={false}
+                allowDecimals={false}
+              />
+              <Tooltip
+                cursor={{ fill: `${PUNCH}1A` }}
+                contentStyle={{
+                  backgroundColor: tooltipBg,
+                  border: `1px solid ${gridColor}`,
+                  color: tooltipText,
+                  fontFamily: "JetBrains Mono, monospace",
+                  fontSize: 11,
+                  borderRadius: 0,
+                }}
+              />
+              <Bar dataKey="commentCount" fill={PUNCH_2} barSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
       </div>
     </div>
   );

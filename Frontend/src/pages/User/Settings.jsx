@@ -25,7 +25,18 @@ export default function Settings() {
     refetch: refetchDashboard,
   } = useDashboardAPIQuery();
 
-  // Loading/Error UI
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#sub") {
+      const timer = setTimeout(() => {
+        const element = document.getElementById("sub");
+        if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [location, dashboardLoading]);
+
   if (dashboardLoading) return <Loader />;
 
   if (dashboardError) {
@@ -42,50 +53,33 @@ export default function Settings() {
     );
   }
 
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.hash === "#sub") {
-      const timer = setTimeout(() => {
-        const element = document.getElementById("sub");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [location, dashboardLoading]);
-
   return (
-    <div className="w-full dark:bg-[#0a0a0a] flex flex-col justify-center p-4 gap-8 dark:text-white">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold">Settings</h1>
-        <p className="text-gray-400">
-          Manage your account settings and preferences
+    <div className="w-full bg-paper dark:bg-ink text-ink dark:text-paper">
+      <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 sm:px-10 py-10">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute mb-4">
+          <span className="text-[var(--color-punch)]">▮</span> Settings
+        </p>
+        <h1
+          className="font-display font-semibold tracking-[-0.04em] leading-[0.95]"
+          style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+        >
+          Account & preferences
+          <span className="text-[var(--color-punch)]">.</span>
+        </h1>
+        <p className="text-sm sm:text-base text-mute mt-3 max-w-xl">
+          Manage your profile, password, subscription and billing.
         </p>
       </div>
 
-      <div className="space-y-8 max-w-5xl">
-        {/* Profile Information */}
+      <div className="px-6 sm:px-10 py-10 flex flex-col gap-8 max-w-5xl">
         <ProfileSection
           dashboardData={dashboardData}
           refetchDashboard={refetchDashboard}
           setModal={setModal}
         />
-        {/* Change Password */}
         <PasswordSection setModal={setModal} />
-
-        {/* Subscription */}
-        <div id="sub">
-          <SubscriptionSection dashboardData={dashboardData} />
-        </div>
-
-        {/* Payment Details */}
+        <SubscriptionSection dashboardData={dashboardData} />
         <LastPaymentSection />
-
-        {/* Account Actions Section */}
         <AccountActionsSection setModal={setModal} />
       </div>
 

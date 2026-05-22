@@ -11,9 +11,7 @@ function Dashboard() {
     refetchOnMountOrArgChange: true,
   });
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
   if (error) {
     return (
       <InfoModal
@@ -27,26 +25,33 @@ function Dashboard() {
     );
   }
 
+  const firstName = data?.user?.firstName
+    ? data.user.firstName.charAt(0).toUpperCase() + data.user.firstName.slice(1)
+    : "";
+
   return (
-    <div className="w-full dark:bg-[#0a0a0a] flex flex-col justify-center p-4 gap-8 dark:text-white">
-      {/*Heading*/}
-      <div className="w-full flex flex-col justify-start items-start">
-        <h1 className="w-full text-xl md:text-3xl font-bold">
-          CommentDraw Dashboard
+    <div className="w-full bg-paper dark:bg-ink text-ink dark:text-paper">
+      <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 sm:px-10 py-10">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute mb-4">
+          <span className="text-[var(--color-punch)]">▮</span> Dashboard / Overview
+        </p>
+        <h1
+          className="font-display font-semibold tracking-[-0.04em] leading-[0.95]"
+          style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+        >
+          Welcome back, {firstName || "creator"}
+          <span className="text-[var(--color-punch)]">.</span>
         </h1>
-        <p className="text-zinc-400 text-xs md:text-lg">
-          Manage your giveaways and track performance
+        <p className="text-sm sm:text-base text-mute mt-3 max-w-xl">
+          Run a fair draw, check your quota, and review past winners.
         </p>
       </div>
 
-      {/*Quick Actions*/}
-      <QuickActions />
-
-      {/* Account Information */}
-      <AccountInformation data={data} />
-
-      {/*Giveaway Insights*/}
-      <GiveawayInsights />
+      <div className="px-6 sm:px-10 py-10 flex flex-col gap-8">
+        <QuickActions />
+        <AccountInformation data={data} />
+        <GiveawayInsights />
+      </div>
     </div>
   );
 }

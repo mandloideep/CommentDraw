@@ -1,77 +1,100 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logoDark, logoLight } from "../..";
 import { Link as ScrollLink } from "react-scroll";
-import { Sun, Moon } from "lucide-react";
-import { toggleTheme } from "../../Redux/slices/themeSlice";
+import { Sun, Moon, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toggleTheme } from "../../Redux/slices/themeSlice";
+import { Logo } from "../Common";
+
+const NAV = [
+  { to: "features", label: "Features", offset: -70 },
+  { to: "working", label: "How it works", offset: -70 },
+  { to: "pricing", label: "Pricing", offset: 60 },
+  { to: "faq", label: "FAQ", offset: 55 },
+];
 
 function Header() {
   const theme = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="w-full flex items-center justify-between border-b-2 border-b-[#f7f7f7] dark:border-b-[#0f0f0f] px-4 md:px-8">
-      <div className="flex items-center mr-2 md:mr-[14rem] ">
-        <img
-          src={theme === "dark" ? logoDark : logoLight}
-          alt="Logo"
-          className="h-8 md:h-12 lg:h-16 md:w-auto"
-        />
+    <header className="sticky top-0 z-40 w-full bg-paper/90 dark:bg-ink/90 backdrop-blur-sm border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+      <div className="flex items-center justify-between px-5 sm:px-8 lg:px-12 h-16">
+        <Logo />
+
+        <nav className="hidden lg:flex items-center gap-10 font-mono text-[11px] uppercase tracking-[0.18em]">
+          {NAV.map((item, i) => (
+            <ScrollLink
+              key={item.to}
+              to={item.to}
+              smooth={true}
+              duration={500}
+              offset={item.offset}
+              className="cursor-pointer text-mute hover:text-ink dark:hover:text-paper transition-colors"
+            >
+              <span className="text-[var(--color-punch)] mr-1">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {item.label}
+            </ScrollLink>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1 sm:gap-3">
+          <button
+            onClick={() => dispatch(toggleTheme())}
+            aria-label="Toggle theme"
+            className="h-9 w-9 grid place-items-center text-mute hover:text-[var(--color-punch)] transition-colors cursor-pointer"
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+
+          <button
+            onClick={() => navigate("/signin")}
+            className="hidden sm:inline-block font-mono text-[11px] uppercase tracking-[0.18em] text-mute hover:text-ink dark:hover:text-paper transition-colors cursor-pointer px-2"
+          >
+            Sign in
+          </button>
+
+          <button
+            onClick={() => navigate("/signup")}
+            className="h-9 sm:h-10 px-4 sm:px-5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] border-2 border-ink dark:border-paper bg-ink text-paper dark:bg-paper dark:text-ink hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper transition-colors cursor-pointer"
+          >
+            Get started →
+          </button>
+
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            className="lg:hidden h-9 w-9 grid place-items-center text-ink dark:text-paper cursor-pointer"
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
-      <nav className="hidden lg:flex justify-center items-center gap-16 text-lg font-semibold text-black dark:text-white flex-1">
-        <ScrollLink
-          to="pricing"
-          smooth={true}
-          duration={500}
-          offset={60}
-          className="hover:text-[var(--orange)] cursor-pointer"
-        >
-          Pricing
-        </ScrollLink>
-        <ScrollLink
-          to="features"
-          smooth={true}
-          duration={500}
-          offset={-70}
-          className="hover:text-[var(--orange)] cursor-pointer"
-        >
-          Features
-        </ScrollLink>
-        <ScrollLink
-          to="faq"
-          smooth={true}
-          duration={500}
-          offset={55}
-          className="hover:text-[var(--orange)] cursor-pointer"
-        >
-          FAQ's
-        </ScrollLink>
-      </nav>
-
-      <div className="flex gap-2 md:gap-6 items-center w-auto">
-        <button
-          onClick={() => dispatch(toggleTheme())}
-          className="flex justify-center items-center rounded-xl h-12 w-12 cursor-pointer hover:bg-[#f7f7f7] hover:dark:bg-[#0f0f0f]"
-        >
-          {theme === "dark" ? <Sun color="#FFFFFF" /> : <Moon />}
-        </button>
-
-        <button
-          onClick={() => navigate("/signIn")}
-          className="font-bold dark:text-white text-black text-xs md:text-lg cursor-pointer hover:text-[var(--orange)]"
-        >
-          Sign In
-        </button>
-
-        <button
-          onClick={() => navigate("/signUp")}
-          className="h-6 w-24 ml-2 md:h-8 md:pb-8 md:w-32 lg:pb-2 lg:h-12 bg-[var(--orange)] text-xs md:text-lg md:py-2 rounded-lg md:rounded-xl font-bold text-black dark:text-white hover:scale-90 hover:bg-orange-800 transition-transform cursor-pointer"
-        >
-          Get Started
-        </button>
-      </div>
+      {open && (
+        <nav className="lg:hidden border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-5 sm:px-8 py-4 flex flex-col gap-3 font-mono text-xs uppercase tracking-[0.18em]">
+          {NAV.map((item, i) => (
+            <ScrollLink
+              key={item.to}
+              to={item.to}
+              smooth={true}
+              duration={500}
+              offset={item.offset}
+              onClick={() => setOpen(false)}
+              className="cursor-pointer text-mute hover:text-ink dark:hover:text-paper"
+            >
+              <span className="text-[var(--color-punch)] mr-2">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {item.label}
+            </ScrollLink>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

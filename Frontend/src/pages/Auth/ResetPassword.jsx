@@ -1,16 +1,12 @@
 import { useSearchParams } from "react-router-dom";
 import { useSavePasswordMutation } from "../../Redux/slices/apiSlice";
 import { useForm } from "react-hook-form";
-import { logoDark, logoLight } from "../..";
 import { Lock } from "lucide-react";
-import { Form, Loader } from "../../components/Common";
-import { useSelector } from "react-redux";
+import { Form, Loader, Logo } from "../../components/Common";
 
 function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-
-  const theme = useSelector((state) => state.theme.mode);
 
   const {
     register,
@@ -21,41 +17,25 @@ function ResetPassword() {
 
   const formData = [
     {
-      label: "Password",
+      label: "New password",
       type: "password",
-      icon: (
-        <Lock
-          size={18}
-          className="absolute top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-      ),
-      placeholder: "Enter your password",
+      icon: <Lock size={14} />,
+      placeholder: "Create a new password",
       register: register("password", {
         required: "Password is required",
-        minLength: {
-          value: 6,
-          message: "Password must be at least 6 characters",
-        },
-        maxLength: {
-          value: 30,
-          message: "Password must be less than 30 characters",
-        },
+        minLength: { value: 8, message: "Min 8 characters" },
+        maxLength: { value: 50, message: "Max 50 characters" },
         pattern: {
           value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{6,}$/,
-          message: "Password must contain letters and numbers",
+          message: "Must contain letters and numbers",
         },
       }),
     },
     {
-      label: "Confirm Password",
+      label: "Confirm password",
       type: "password",
-      icon: (
-        <Lock
-          size={18}
-          className="absolute top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-      ),
-      placeholder: "Confirm your password",
+      icon: <Lock size={14} />,
+      placeholder: "Repeat the password",
       register: register("confirmPassword", {
         required: "Please confirm your password",
         validate: (value) =>
@@ -64,40 +44,50 @@ function ResetPassword() {
     },
   ];
 
-  const heading = "Reset Password";
-  const headingClassName = "text-3xl";
+  const [savePassword, { isLoading }] = useSavePasswordMutation();
 
-  const [savePassword, { isLoading, isSuccess, error }] =
-    useSavePasswordMutation();
-
-  const handleForgotPassword = (data) => {
+  const handleForgotPassword = (data) =>
     savePassword({ password: data.password, token });
-  };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center dark:text-white">
-      {isLoading && <Loader />}
-      <div className="w-full flex flex-col justify-center items-center">
-        <img
-          src={theme === "dark" ? logoDark : logoLight}
-          className="h-16 w-32"
-        />
-        <h1 className="text-md text-[#a1a1a1]">Join the creator community</h1>
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper flex flex-col">
+      <div className="px-6 sm:px-10 py-6 border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] flex items-center justify-between">
+        <Logo />
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+          Reset password
+        </p>
       </div>
 
-      <div className="w-full md:w-md md:px-4 mt-4 border-2 flex items-center justify-center border-[#111111] rounded-xl">
-        <Form
-          formData={formData}
-          headingData={{ heading, headingClassName }}
-          errors={errors}
-          className="bg-[#f2f2f5] dark:bg-[#121212] w-full pl-10 p-2 border border-[#171717] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
-          submitBtnText="Change Password"
-          btnClassName="w-full bg-[var(--orange)] rounded-lg p-2  text-black dark:text-white hover:scale-105 transition-transform "
-          onSubmit={handleSubmit(handleForgotPassword)}
-          isContainsGoogleSignIn={false}
-          isAuthenticationForm={false}
-        />
-      </div>
+      {isLoading && <Loader />}
+
+      <main className="flex-1 grid lg:grid-cols-12 px-6 sm:px-10 py-12">
+        <div className="lg:col-span-3 mb-8 lg:mb-0">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            <span className="text-[var(--color-punch)]">02</span> / Choose new password
+          </p>
+        </div>
+        <div className="lg:col-span-6 lg:col-start-4">
+          <h1
+            className="font-display font-semibold tracking-[-0.04em] leading-[0.95] mb-3"
+            style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)" }}
+          >
+            Set a new password
+            <span className="text-[var(--color-punch)]">.</span>
+          </h1>
+          <p className="text-sm sm:text-base text-mute mb-10">
+            Pick something memorable and strong.
+          </p>
+
+          <Form
+            formData={formData}
+            errors={errors}
+            submitBtnText="Change password"
+            isContainsGoogleSignIn={false}
+            isAuthenticationForm={false}
+            onSubmit={handleSubmit(handleForgotPassword)}
+          />
+        </div>
+      </main>
     </div>
   );
 }

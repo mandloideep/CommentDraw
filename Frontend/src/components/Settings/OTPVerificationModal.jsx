@@ -14,10 +14,7 @@ export default function OTPVerificationModal({
     const newOtp = [...otp];
     newOtp[index] = element.value;
     setOtp(newOtp);
-
-    if (element.value !== "" && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
+    if (element.value !== "" && index < 5) inputRefs.current[index + 1].focus();
   };
 
   const handleKeyDown = (e, index) => {
@@ -29,11 +26,16 @@ export default function OTPVerificationModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-      <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-[#0a0a0a] p-8 text-center">
-        <h2 className="text-2xl font-bold text-white mb-2">Verify Deletion</h2>
-        <p className="text-gray-400 text-sm mb-8">
-          Enter the 6-digit code sent to your email.
+    <div className="fixed inset-0 z-[110] flex items-center justify-center bg-ink/80 p-4">
+      <div className="w-full max-w-sm border-2 border-ink dark:border-paper bg-paper dark:bg-ink text-ink dark:text-paper p-8">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute mb-4">
+          <span className="text-[var(--color-punch)]">●</span> Verify deletion
+        </p>
+        <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] mb-2">
+          Enter your code
+        </h2>
+        <p className="text-sm text-mute mb-8">
+          We sent a 6-digit code to your email.
         </p>
 
         <div className="flex justify-center gap-2 mb-8">
@@ -46,7 +48,7 @@ export default function OTPVerificationModal({
               value={data}
               onChange={(e) => handleChange(e.target, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-10 h-12 md:w-12 md:h-14 text-center text-xl font-bold rounded-xl border border-zinc-800 bg-zinc-900 text-white focus:border-orange-500 focus:outline-none transition-all"
+              className="w-10 h-12 md:w-12 md:h-14 text-center text-xl font-display font-semibold border-2 border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] bg-transparent text-ink dark:text-paper focus:border-[var(--color-punch)] focus:outline-none transition-colors"
             />
           ))}
         </div>
@@ -54,13 +56,13 @@ export default function OTPVerificationModal({
         <button
           onClick={() => onVerify(otp.join(""))}
           disabled={otp.join("").length < 6 || isVerifying}
-          className="w-full py-3 rounded-xl bg-red-700 hover:bg-red-800 text-white font-semibold disabled:bg-zinc-800 disabled:text-zinc-500 transition-all"
+          className="w-full h-11 border-2 border-[var(--color-punch)] bg-[var(--color-punch)] text-paper font-mono text-[10px] uppercase tracking-[0.18em] hover:bg-ink hover:border-ink disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
-          {isVerifying ? "Verifying..." : "Confirm & Delete Everything"}
+          {isVerifying ? "Verifying..." : "Confirm & delete"}
         </button>
         <button
           onClick={onClose}
-          className="mt-4 text-zinc-500 hover:text-white text-sm"
+          className="w-full mt-3 text-mute hover:text-ink dark:hover:text-paper font-mono text-[10px] uppercase tracking-[0.18em] cursor-pointer"
         >
           Cancel
         </button>

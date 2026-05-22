@@ -1,24 +1,13 @@
-import React from "react";
-import { useSelector } from "react-redux";
-
-function SocialIcon({ src, size = 24, className = "", onClick }) {
-  const theme = useSelector((state) => state.theme.mode);
-  const isDark = theme === "dark";
-
+// eslint-disable-next-line no-unused-vars
+function SocialIcon({ icon: Icon, onClick, label, size = 18 }) {
   return (
-    <div
-      className={`cursor-pointer ${className} transition-transform duration-300 hover:scale-110`}
-      style={{ width: size, height: size }}
+    <button
       onClick={onClick}
+      aria-label={label}
+      className="h-10 w-10 grid place-items-center border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] text-mute hover:text-paper hover:bg-ink dark:hover:text-ink dark:hover:bg-paper transition-colors cursor-pointer"
     >
-      <img
-        src={src}
-        alt="social-icon"
-        width={size}
-        height={size}
-        style={{ filter: isDark ? "invert(1)" : "invert(0)" }}
-      />
-    </div>
+      <Icon size={size} strokeWidth={1.75} />
+    </button>
   );
 }
 

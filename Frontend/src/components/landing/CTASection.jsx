@@ -1,53 +1,49 @@
-import { ArrowRight } from "lucide-react";
-import React from "react";
-import { useSelector } from "react-redux";
+import { ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function CTASection() {
-  const theme = useSelector((state) => state.theme.mode);
   const navigate = useNavigate();
-  return (
-    <div className="flex flex-col justify-center items-center p-6 px-8 md:p-12 md:px-16 gap-8 dark:text-white my-8">
-      <div
-        className={`flex flex-col justify-center items-center w-full max-w-sm md:max-w-full pt-12 md:pt-24 p-6 md:p-8 rounded-2xl border border-[#a1a1a1]   ${
-          theme === "dark"
-            ? "bg-gradient-to-r from-[#ff3333]/10 to-[#ffeb3b]/10"
-            : "bg-[#ffedeb]"
-        }`}
-      >
-        <div className=" w-full flex flex-col justify-center items-center gap-4 mb-6">
-          <h2 className="text-2xl md:text-4xl font-bold text-center leading-tight">
-            Ready to Start Picking Winners?
-          </h2>
 
-          <div className="w-full flex flex-col items-center justify-center">
-            <p className="text-sm md:text-xl text-[#a1a1a1] text-center max-w-md">
-              Join thousands of content creators who trust CommentDraw for fair and
-            </p>
-            <p className="text-sm md:text-xl text-[#a1a1a1] text-center max-w-md">
-              transparent giveaways.
+  return (
+    <section className="w-full bg-ink dark:bg-paper text-paper dark:text-ink border-b border-[var(--color-rule-dark)] dark:border-[var(--color-rule)]">
+      <div className="px-5 sm:px-8 lg:px-12 py-20 sm:py-32">
+        <div className="grid lg:grid-cols-12 gap-y-10 lg:gap-x-12">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-paper/60 dark:text-ink/60">
+              <span className="text-[var(--color-punch)]">06</span> / Begin
             </p>
           </div>
-        </div>
+          <div className="lg:col-span-9 flex flex-col gap-10">
+            <h2
+              className="font-display font-semibold leading-[0.9] tracking-[-0.04em] max-w-4xl"
+              style={{ fontSize: "clamp(2.5rem, 9vw, 7rem)" }}
+            >
+              Run a fair draw
+              <span className="text-[var(--color-punch)]">.</span>
+              <br />
+              In thirty seconds
+              <span className="text-[var(--color-punch)]">.</span>
+            </h2>
 
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-1/2">
-          <button
-            onClick={() => navigate("/signUp")}
-            className="h-10 md:h-12 w-full lg:w-2/5 bg-[var(--orange)] text-sm md:text-lg rounded-md font-bold text-black dark:text-white hover:scale-105 transition-transform cursor-pointer flex items-center justify-center"
-          >
-            Get Started
-            <ArrowRight className="inline-block ml-2" size={16} />
-          </button>
-
-          <button
-            onClick={() => navigate("/signIn")}
-            className="h-10 md:h-12 w-full lg:w-1/5 bg-[#221d14] text-xs md:text-sm rounded-md font-bold border border-[#a1a1a1] text-white hover:scale-105 transition-transform cursor-pointer"
-          >
-            Sign In
-          </button>
+            <div className="flex flex-wrap gap-4 items-center">
+              <button
+                onClick={() => navigate("/signup")}
+                className="h-12 px-7 font-mono text-xs uppercase tracking-[0.14em] border-2 border-paper dark:border-ink bg-paper text-ink dark:bg-ink dark:text-paper hover:bg-[var(--color-punch)] hover:text-paper hover:border-[var(--color-punch)] transition-colors cursor-pointer inline-flex items-center gap-2"
+              >
+                Get started
+                <ArrowUpRight size={16} strokeWidth={2.5} />
+              </button>
+              <button
+                onClick={() => navigate("/signin")}
+                className="h-12 px-7 font-mono text-xs uppercase tracking-[0.14em] border-2 border-paper/40 dark:border-ink/40 text-paper dark:text-ink hover:border-paper dark:hover:border-ink transition-colors cursor-pointer"
+              >
+                I already have an account
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

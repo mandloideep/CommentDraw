@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&f[]=jetbrains-mono@400,500&display=swap");
 
 html,
 body,
@@ -13,12 +13,53 @@ body,
   overflow-x: hidden;
 }
 
+@theme {
+  --color-paper: #fafaf7;
+  --color-ink: #0a0a0a;
+  --color-mute: #8a8a8a;
+  --color-rule: #e6e6e1;
+  --color-rule-dark: #1f1f1d;
+  --color-punch: #ff3d1f;
+  --color-punch-2: #0030ff;
+
+  --font-display: "Switzer", system-ui, sans-serif;
+  --font-sans: "Switzer", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
 :root {
   --black: #0a0a0a;
-  --orange: #ff4d29;
+  --orange: #ff3d1f;
+}
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+html.dark {
+  background-color: var(--color-ink);
+  color: var(--color-paper);
 }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  font-family: "Switzer", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-punch);
+  color: var(--color-paper);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-punch);
+  outline-offset: 2px;
+}
+
+@keyframes cd-pulse-square {
+  0%, 100% { opacity: 0.2; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
 }

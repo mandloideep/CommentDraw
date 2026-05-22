@@ -1,7 +1,7 @@
 import {
   Header,
   Footer,
-  HeroSection as MainContent,
+  HeroSection,
   WorkingSection,
   FeaturesSection,
   SubscriptionSection as Subscription,
@@ -13,20 +13,14 @@ function LandingPage() {
   return (
     <>
       <Header />
-      <MainContent />
-      <WorkingSection />
-      <div id="features">
+      <main>
+        <HeroSection />
+        <WorkingSection />
         <FeaturesSection />
-      </div>
-
-      <div id="pricing">
         <Subscription />
-      </div>
-
-      <div id="faq">
         <FAQ />
-      </div>
-      <CTASection />
+        <CTASection />
+      </main>
       <Footer />
     </>
   );

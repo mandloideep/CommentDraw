@@ -1,7 +1,5 @@
-import React from "react";
-
 function Input({
-  placeholder = "Enter...",
+  placeholder = "",
   className = "",
   type = "text",
   ...props
@@ -10,7 +8,7 @@ function Input({
     <input
       type={type}
       placeholder={placeholder}
-      className={`p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[var(--orange)] ${className}`}
+      className={`w-full bg-transparent border-0 border-b-2 border-ink/30 dark:border-paper/30 px-0 py-3 text-base text-ink dark:text-paper placeholder:text-mute focus:border-[var(--color-punch)] focus:outline-none transition-colors duration-200 ${className}`}
       {...props}
     />
   );

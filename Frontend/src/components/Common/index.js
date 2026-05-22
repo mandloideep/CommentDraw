@@ -4,3 +4,4 @@ export { default as Form } from "./Form";
 export { default as Loader } from "./Loader";
 export { default as InfoModal } from "./InfoModal";
 export { default as PlanCard } from "./PlanCard";
+export { default as Logo } from "./Logo";

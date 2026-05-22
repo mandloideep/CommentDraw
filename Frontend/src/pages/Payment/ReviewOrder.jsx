@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Check, Crown, ArrowLeft, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Check, ArrowLeft, ShieldCheck, ArrowUpRight } from "lucide-react";
 import SUBSCRIPTION_PLANS from "../../../config/subscriptionPlans";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { usePayment } from "../../components/Settings/hooks/usePayment";
-import { InfoModal, Loader } from "../../components/Common";
+import { InfoModal, Loader, Logo } from "../../components/Common";
 import { useDashboardAPIQuery } from "../../Redux/slices/apiSlice";
 
 function ReviewOrder() {
@@ -26,140 +26,142 @@ function ReviewOrder() {
   const isValidPlan =
     Object.keys(SUBSCRIPTION_PLANS).includes(planName) && planName !== "FREE";
 
+  const userEmail = dashboardData?.user?.email || "";
+  const { handlePayment } = usePayment(userEmail, setModal);
+
   useEffect(() => {
     if (!isDashboardLoading && !isValidPlan) {
       navigate("/home", { replace: true });
     }
   }, [isValidPlan, navigate, isDashboardLoading]);
 
-  if (isDashboardLoading) {
-    return <Loader />;
-  }
+  if (isDashboardLoading) return <Loader />;
   if (!isValidPlan) return <Loader />;
+
   const planDetails = SUBSCRIPTION_PLANS[planName] || SUBSCRIPTION_PLANS.GOLD;
   const price = planDetails.price;
+  const planTitle = planName.charAt(0) + planName.slice(1).toLowerCase();
 
   const features = [
     planDetails.maxGiveaways === -1
       ? "Unlimited giveaways"
       : `${planDetails.maxGiveaways} giveaways per month`,
-    `Up to ${planDetails.maxComments.toLocaleString()} comments`,
+    `Up to ${planDetails.maxComments.toLocaleString()} comments per draw`,
     `Up to ${planDetails.maxWinners} winners per giveaway`,
   ];
 
-  const userEmail = dashboardData?.user?.email || "";
-  const { handlePayment } = usePayment(userEmail, setModal);
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col font-sans">
-      <nav className="relative z-50 w-full p-6 flex justify-between items-center max-w-7xl mx-auto">
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper flex flex-col">
+      <div className="px-6 sm:px-10 py-6 border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] flex items-center justify-between">
         <button
-          onClick={() => navigate("/home")}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group"
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-mute hover:text-[var(--color-punch)] transition-colors cursor-pointer"
         >
-          <ArrowLeft
-            size={20}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          <span className="font-medium">Back</span>
+          <ArrowLeft size={14} /> Back
         </button>
-
-        <div className="flex items-center gap-2 text-green-500/80 text-xs font-medium bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20">
-          <ShieldCheck size={14} />
-          Secure Checkout
+        <Logo />
+        <div className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+          <ShieldCheck size={14} className="text-[var(--color-punch-2)]" />
+          Secure checkout
         </div>
-      </nav>
+      </div>
 
-      <main className="flex-1 flex flex-col items-center justify-center p-4 md:-mt-12 lg:-mt-20">
-        <div className="w-full max-w-md">
-          {/* Header Section */}
-          <div className="text-center mb-4">
-            <h1 className="text-3xl font-bold tracking-tight">Review Order</h1>
-            <p className="text-gray-400 mt-1 text-sm px-2">
-              You're just one step away from unlocking premium features
-            </p>
-          </div>
+      <main className="flex-1 grid lg:grid-cols-12 px-6 sm:px-10 py-12">
+        <div className="lg:col-span-3 mb-8 lg:mb-0">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            <span className="text-[var(--color-punch)]">▮</span> Review order
+          </p>
+        </div>
+        <div className="lg:col-span-6 lg:col-start-4">
+          <h1
+            className="font-display font-semibold tracking-[-0.04em] leading-[0.95] mb-3"
+            style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)" }}
+          >
+            One step away
+            <span className="text-[var(--color-punch)]">.</span>
+          </h1>
+          <p className="text-sm sm:text-base text-mute mb-10">
+            Confirm your plan and complete checkout.
+          </p>
 
-          {/* Order Summary Card */}
-          <div className="bg-[#161616] border border-gray-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-50"></div>
-
-            <h2 className="text-lg font-semibold mb-6">Order Summary</h2>
-
-            {/* Plan Info */}
-            <div className="bg-[#1f1512] border border-orange-900/30 rounded-2xl p-5 mb-8 flex items-start gap-4">
-              <div className="bg-[#2d1a12] p-3 rounded-xl border border-orange-500/20">
-                <Crown className="text-orange-500 w-6 h-6" />
-              </div>
+          <div className="border-2 border-ink dark:border-paper p-6 sm:p-8 flex flex-col gap-6">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="font-bold text-xl text-orange-50">
-                  {planName.charAt(0).toUpperCase() +
-                    planName.slice(1).toLowerCase()}{" "}
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute mb-2">
                   Plan
-                </h3>
-                <p className="text-gray-400 text-sm">Monthly subscription</p>
+                </p>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">
+                  {planTitle}
+                </h2>
+                <p className="text-xs text-mute mt-1">Monthly subscription</p>
               </div>
+              <span className="inline-flex items-center px-2 py-0.5 border border-[var(--color-punch)] text-[var(--color-punch)] font-mono text-[10px] uppercase tracking-[0.18em]">
+                ● {planTitle}
+              </span>
             </div>
 
-            {/* Features List */}
-            <ul className="space-y-4 mb-8">
+            <ul className="border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-5 flex flex-col gap-3">
               {features.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-3 text-[15px] text-gray-300"
-                >
-                  <div className="bg-orange-500/10 p-1 rounded-full">
-                    <Check className="text-orange-500 w-3.5 h-3.5" />
-                  </div>
+                <li key={index} className="flex items-center gap-3 text-sm">
+                  <Check
+                    size={14}
+                    strokeWidth={2.5}
+                    className="text-[var(--color-punch)] shrink-0"
+                  />
                   {feature}
                 </li>
               ))}
             </ul>
 
-            {/* Pricing Details */}
-            <div className="border-t border-gray-800/60 pt-6 space-y-4">
-              <div className="flex justify-between text-gray-400 text-sm">
+            <div className="border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-5 flex flex-col gap-3">
+              <div className="flex justify-between font-mono text-xs uppercase tracking-tight text-mute">
                 <span>Subtotal</span>
-                <span className="text-gray-200">₹{price.toFixed(2)}</span>
+                <span className="text-ink dark:text-paper">${price.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-gray-400 text-sm">
+              <div className="flex justify-between font-mono text-xs uppercase tracking-tight text-mute">
                 <span>Tax (0%)</span>
-                <span className="text-gray-200">₹0.00</span>
+                <span className="text-ink dark:text-paper">$0.00</span>
               </div>
-              <div className="flex justify-between items-center pt-2">
-                <span className="text-lg font-bold">Total</span>
+              <div className="flex justify-between items-baseline border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-4 mt-1">
+                <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute">
+                  Total
+                </span>
                 <div className="text-right">
-                  <span className="text-2xl font-extrabold text-orange-500">
-                    ₹{price.toFixed(2)}
+                  <span className="font-display text-4xl font-semibold tracking-[-0.03em]">
+                    ${price.toFixed(2)}
                   </span>
-                  <span className="text-gray-500 text-xs block">/month</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute ml-2">
+                    / month
+                  </span>
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => handlePayment(planName)}
-              className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-4 rounded-2xl mt-8 transition-all active:scale-[0.98] shadow-lg shadow-orange-900/20 flex items-center justify-center gap-2"
+              className="w-full h-12 inline-flex items-center justify-center gap-2 border-2 border-ink dark:border-paper bg-ink text-paper dark:bg-paper dark:text-ink font-mono text-xs uppercase tracking-[0.18em] hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper transition-colors cursor-pointer"
             >
-              Confirm and Pay
+              Confirm & pay
+              <ArrowUpRight size={14} strokeWidth={2.5} />
             </button>
 
-            <div className="text-center text-[11px] text-gray-500 mt-6 leading-relaxed flex flex-wrap justify-center gap-1 px-4">
+            <p className="text-xs text-mute text-center">
               By confirming, you agree to our{" "}
-              <span
+              <button
                 onClick={() => navigate("/terms-of-service")}
-                className="underline cursor-pointer hover:text-gray-300"
+                className="underline underline-offset-4 hover:text-ink dark:hover:text-paper cursor-pointer"
               >
                 Terms
-              </span>
-              &
-              <span
+              </button>{" "}
+              and{" "}
+              <button
                 onClick={() => navigate("/privacy-policy")}
-                className="underline cursor-pointer hover:text-gray-300"
+                className="underline underline-offset-4 hover:text-ink dark:hover:text-paper cursor-pointer"
               >
                 Privacy Policy
-              </span>
-            </div>
+              </button>
+              .
+            </p>
           </div>
         </div>
       </main>

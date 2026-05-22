@@ -7,31 +7,12 @@ import OTPVerificationModal from "./OTPVerificationModal";
 function AccountActionsSection({ setModal }) {
   const {
     handleLogout,
-    triggerDelete,
     handleCautionConfirm,
     handleVerifyOTP,
     closeModals,
     showOtpModal,
     isVerifying,
   } = useAccountActions(setModal);
-
-  const btnDetails = [
-    {
-      title: "Logout",
-      description: "Sign out from your account on this device",
-      icon: <LogOut size={16} />,
-      onClick: triggerDelete,
-    },
-    {
-      title: "Delete Account",
-      description: "Permanently delete your account and all associated data",
-      icon: <Trash2 size={16} />,
-      onClick: triggerDelete,
-    },
-  ];
-  const handleCloseCaution = () => {
-    setCautionModal((prev) => ({ ...prev, isOpen: false }));
-  };
 
   const [cautionModal, setCautionModal] = useState({
     isOpen: false,
@@ -40,77 +21,95 @@ function AccountActionsSection({ setModal }) {
     data: {},
   });
 
-  const handleBtnClick = (title) => {
-    if (title === "Logout") {
-      setCautionModal({
-        isOpen: true,
-        onClose: closeModals,
-        onConfirm: handleLogout,
-        data: {
-          title: "Confirm Logout",
-          message: "Are you sure you want to logout from your account?",
-          confirmText: "Logout",
-          isDangerous: false,
-        },
-      });
-    } else if (title === "Delete Account") {
-      setCautionModal({
-        isOpen: true,
-        onClose: closeModals,
-        onConfirm: handleCautionConfirm,
-        data: {
-          title: "Are you absolutely sure?",
-          message:
-            "This action cannot be undone. All your data will be removed.",
-          confirmText: "Yes, Delete My Account",
-          isDangerous: true,
-          actionType: "deleted",
-          warnings: ["Giveaway history", "Profile data", "Subscriptions"],
-        },
-      });
-    }
-  };
+  const handleCloseCaution = () =>
+    setCautionModal((prev) => ({ ...prev, isOpen: false }));
+
+  const actions = [
+    {
+      title: "Logout",
+      description: "Sign out from your account on this device.",
+      Icon: LogOut,
+      onClick: () =>
+        setCautionModal({
+          isOpen: true,
+          onClose: closeModals,
+          onConfirm: handleLogout,
+          data: {
+            title: "Confirm logout",
+            message: "Sign out from CommentDraw on this device?",
+            confirmText: "Logout",
+            isDangerous: false,
+          },
+        }),
+    },
+    {
+      title: "Delete account",
+      description: "Permanently delete your account and all associated data.",
+      Icon: Trash2,
+      destructive: true,
+      onClick: () =>
+        setCautionModal({
+          isOpen: true,
+          onClose: closeModals,
+          onConfirm: handleCautionConfirm,
+          data: {
+            title: "Are you absolutely sure?",
+            message:
+              "This action cannot be undone. All your data will be removed.",
+            confirmText: "Yes, delete my account",
+            isDangerous: true,
+            actionType: "deleted",
+            warnings: ["Giveaway history", "Profile data", "Subscriptions"],
+          },
+        }),
+    },
+  ];
 
   return (
     <>
-      <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <User size={18} />
-          <h2 className="text-lg font-medium">Account Actions</h2>
+      <section className="border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] p-6 sm:p-8">
+        <div className="flex items-center justify-between mb-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            <span className="text-[var(--color-punch)]">05</span> / Account
+          </p>
+          <User size={16} className="text-mute" strokeWidth={1.75} />
         </div>
-        <p className="text-sm text-gray-400 mb-6">
-          Irreversible actions for your account
+
+        <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] mb-2">
+          Account actions
+        </h2>
+        <p className="text-sm text-mute mb-8">
+          Sign out or permanently delete your account.
         </p>
 
-        <div className="flex flex-col gap-6">
-          {btnDetails.map((btn, index) => (
+        <div className="flex flex-col">
+          {actions.map((action, i) => (
             <div
-              key={index}
-              className="flex items-center justify-between rounded-xl dark:bg-[#060606] bg-[#f2f2f5] dark:text-gray-400 border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 gap-4"
+              key={action.title}
+              className={`flex items-center justify-between gap-4 py-5 ${
+                i !== actions.length - 1
+                  ? "border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+                  : ""
+              }`}
             >
-              <div className="flex-1">
-                <h2 className="text-white text-sm md:text-base font-medium">
-                  {btn.title}
-                </h2>
-                <p className="text-[11px] md:text-sm text-gray-500 leading-tight">
-                  {btn.description}
+              <div className="flex-1 min-w-0">
+                <p className="font-display text-base sm:text-lg font-medium">
+                  {action.title}
+                </p>
+                <p className="text-xs sm:text-sm text-mute mt-1">
+                  {action.description}
                 </p>
               </div>
-
               <button
-                onClick={() => handleBtnClick(btn.title)}
-                className={`h-10 md:h-12 w-fit rounded-lg px-4 py-2 text-white flex-shrink-0 ${
-                  btn.title === "Delete Account"
-                    ? "bg-red-900 hover:bg-red-950 border-red-800"
-                    : "bg-zinc-950 hover:bg-zinc-900 border-zinc-800"
-                } border`}
+                onClick={action.onClick}
+                className={`h-10 px-4 inline-flex items-center gap-2 border-2 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
+                  action.destructive
+                    ? "border-[var(--color-punch)] text-[var(--color-punch)] hover:bg-[var(--color-punch)] hover:text-paper"
+                    : "border-ink dark:border-paper hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink"
+                }`}
               >
-                <div className="flex items-center justify-center gap-2">
-                  {btn.icon}
-                  <span className="text-xs md:text-sm whitespace-nowrap">
-                    {btn.title}
-                  </span>
-                </div>
+                <action.Icon size={14} />
+                {action.title}
               </button>
             </div>
           ))}

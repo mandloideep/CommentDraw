@@ -1,66 +1,72 @@
-import { useSelector } from "react-redux";
-import { CircleCheckBig } from "lucide-react";
+import { Plus } from "lucide-react";
 
 function PlanCard({ plan, onClick, isCurrent }) {
-  const theme = useSelector((state) => state.theme.mode);
+  const recommended = plan.id === 2;
+  const indexLabel = String(plan.id).padStart(2, "0");
 
   return (
     <div
-      className={`flex flex-col justify-between items-center border border-[#a1a1a1] rounded-xl p-8 gap-4 transition-all duration-500 
-             w-80 md:w-50 lg:w-80 min-h-[500px] 
-              ${
-                plan.id === 2
-                  ? "md:-mt-6 md:shadow-xl md:scale-105 md:z-10 md:bg-white md:dark:bg-[#1a1a1a]"
-                  : "md:z-0 md:bg-white md:dark:bg-[#111]"
-              }`}
-    >
-      <div
-        className={`w-fit p-2 flex justify-center items-center rounded-lg ${
-          theme === "dark"
-            ? "bg-gradient-to-r from-[#ff3333]/10 to-[#ffeb3b]/10"
-            : "bg-[#ffedeb]"
+      className={`relative flex flex-col w-full md:w-80 min-h-[480px] p-8 gap-6 border-2 transition-colors duration-200 rounded-none
+        ${
+          recommended
+            ? "border-ink dark:border-paper bg-paper dark:bg-ink"
+            : "border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] bg-transparent hover:border-ink dark:hover:border-paper"
         }`}
-      >
-        {plan.icon}
-      </div>
+    >
+      {recommended && (
+        <span className="absolute -top-3 left-6 inline-flex items-center gap-1 px-2 py-0.5 bg-[var(--color-punch)] text-paper font-mono text-[10px] uppercase tracking-[0.18em]">
+          Recommended
+        </span>
+      )}
 
-      <h1 className="text-2xl font-semibold">{plan.name}</h1>
-      <h1 className="text-3xl font-bold mb-2">
-        {plan.price}
-        {plan.name !== "Free" ? (
-          <span className="text-lg font-medium text-gray-500 dark:text-gray-400">
-            /month
-          </span>
-        ) : (
-          <span className="text-lg font-medium text-gray-500 dark:text-gray-400">
-            /forever
+      <div className="flex items-baseline justify-between">
+        <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute">
+          {indexLabel} / {plan.name}
+        </span>
+        {isCurrent && (
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-punch-2)]">
+            ● Active
           </span>
         )}
-      </h1>
-      <p className="text-gray-500 dark:text-gray-300 text-center mb-2">
+      </div>
+
+      <div className="flex items-baseline gap-2">
+        <span className="font-display text-6xl font-semibold tracking-[-0.04em] text-ink dark:text-paper">
+          {plan.price}
+        </span>
+        <span className="font-mono text-xs uppercase tracking-[0.14em] text-mute">
+          {plan.name.toUpperCase() === "FREE" ? "/ forever" : "/ month"}
+        </span>
+      </div>
+
+      <p className="text-sm text-mute leading-relaxed border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-5">
         {plan.description}
       </p>
 
-      <div className="flex flex-col gap-2 w-full flex-1">
-        {plan.features.map((feature, index) => (
-          <div key={index} className="flex gap-2 items-start">
-            <CircleCheckBig color="#ff4d29" size={18} />
-            <p className="text-sm">{feature}</p>
-          </div>
+      <ul className="flex flex-col gap-3 flex-1">
+        {plan.features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-3 text-sm">
+            <Plus
+              size={14}
+              strokeWidth={2.75}
+              className="mt-1 shrink-0 text-[var(--color-punch)]"
+            />
+            <span className="text-ink dark:text-paper">{feature}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
       <button
         onClick={() => onClick(plan)}
         disabled={isCurrent}
-        className={`w-full p-3 rounded-lg font-semibold cursor-pointer transform-gpu hover:scale-105 transition-transform duration-500 ease-out
+        className={`mt-2 h-12 px-6 font-mono text-xs uppercase tracking-[0.14em] border-2 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed
           ${
-            plan.id === 2
-              ? "bg-[#ff4d29] text-white"
-              : "bg-[#3c4859] text-white"
+            recommended
+              ? "bg-ink text-paper border-ink dark:bg-paper dark:text-ink dark:border-paper hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper"
+              : "bg-transparent text-ink dark:text-paper border-ink dark:border-paper hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink"
           }`}
       >
-        {isCurrent ? "Active Plan" : plan.cta}
+        {isCurrent ? "Current plan" : plan.cta}
       </button>
     </div>
   );

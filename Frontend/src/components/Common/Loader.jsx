@@ -1,17 +1,20 @@
-import React from "react";
-import { loader } from "../..";
-import Lottie from "lottie-react";
-
-export default function Loader() {
+function Loader() {
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/30 backdrop-blur-md">
-      <div className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5">
-        <Lottie
-          animationData={loader}
-          loop={true}
-          style={{ width: "100%", height: "auto" }}
-        />
+    <div className="fixed inset-0 flex justify-center items-center z-50 bg-ink/70 dark:bg-ink/85">
+      <div className="flex gap-2" aria-label="Loading">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="w-3 h-3 bg-paper inline-block"
+            style={{
+              animation: "cd-pulse-square 1s ease-in-out infinite",
+              animationDelay: `${i * 0.15}s`,
+            }}
+          />
+        ))}
       </div>
     </div>
   );
 }
+
+export default Loader;

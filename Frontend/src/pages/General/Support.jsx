@@ -1,168 +1,181 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import {
   BookOpen,
-  ChevronDown,
+  Plus,
+  Minus,
   ArrowLeft,
   ExternalLink,
   Github,
   Mail,
 } from "lucide-react";
+import { Logo } from "../../components/Common";
 
-const Support = () => {
+const supportCards = [
+  {
+    title: "How it works",
+    desc: "Learn about the YouTube API and our winner selection logic.",
+    Icon: BookOpen,
+    action: "View docs",
+  },
+  {
+    title: "Source code",
+    desc: "Check out the project repository and contribution guidelines.",
+    Icon: Github,
+    action: "GitHub repo",
+  },
+];
+
+const faqs = [
+  {
+    q: "How do I run a giveaway on CommentDraw?",
+    a: "Paste your YouTube video link, set optional filters, then click 'Pick winners'. We fetch comments in real time and run a fair random draw.",
+  },
+  {
+    q: "Is the winner selection truly random?",
+    a: "Yes. We use a deterministic random draw across the deduplicated commenter pool — every eligible commenter has equal weight.",
+  },
+  {
+    q: "How many videos can I process at once?",
+    a: "Up to 3 video URLs per draw. Comments from all of them are merged into a single pool.",
+  },
+];
+
+function Support() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
-
-  const theme = useSelector((state) => state.theme.mode);
-
-  const supportCards = [
-    {
-      title: "How it Works",
-      desc: "Learn about the YouTube API and winner selection logic.",
-      icon: <BookOpen className="text-red-500" />,
-      action: "View Docs",
-    },
-    {
-      title: "Source Code",
-      desc: "Check out the project repository and contribution guidelines.",
-      icon: (
-        <Github
-          className={theme === "dark" ? "text-zinc-400" : "text-zinc-600"}
-        />
-      ),
-      action: "GitHub Repo",
-    },
-  ];
-
-  const faqs = [
-    {
-      q: "How do I run a giveaway on CommentDraw?",
-      a: "Simply paste your YouTube video link, set your preferred filters (like keywords or duplicate handling), and click 'Pick Winner'. The app will fetch comments in real-time.",
-    },
-    {
-      q: "Is the winner selection truly random?",
-      a: "Yes. CommentDraw uses a programmatic randomization algorithm to ensure every eligible comment has an equal chance of winning.",
-    },
-    {
-      q: "How many videos can I process at once?",
-      a: "Currently, you can add up to 3 video links to fetch and merge comments for a single large giveaway.",
-    },
-  ];
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return (
-    <div className={theme === "dark" ? "dark" : ""}>
-      <div className="min-h-screen bg-white text-zinc-900 dark:bg-black dark:text-white font-sans selection:bg-red-500/30 transition-colors duration-300">
-        <div className="border-b border-zinc-200 dark:border-zinc-900 bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg transition-all text-zinc-500 dark:text-zinc-400 hover:text-red-500"
-                title="Go Back"
-              >
-                <ArrowLeft size={20} />
-              </button>
-              <h1 className="text-lg font-bold tracking-tight">
-                Support Center
-              </h1>
-            </div>
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper">
+      <div className="sticky top-0 z-30 border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] bg-paper/90 dark:bg-ink/90 backdrop-blur-sm px-6 sm:px-10 py-4 flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-mute hover:text-[var(--color-punch)] transition-colors cursor-pointer"
+        >
+          <ArrowLeft size={14} /> Back
+        </button>
+        <Logo />
+        <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute hidden sm:inline">
+          Support
+        </span>
+      </div>
+
+      <main className="px-6 sm:px-10 py-16 max-w-5xl">
+        <div className="grid lg:grid-cols-12 gap-y-8 lg:gap-x-12 mb-16">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">▮</span> Support
+            </p>
+          </div>
+          <div className="lg:col-span-9">
+            <h1
+              className="font-display font-semibold tracking-[-0.04em] leading-[0.95] mb-4 max-w-3xl"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+            >
+              How can we help
+              <span className="text-[var(--color-punch)]">?</span>
+            </h1>
+            <p className="text-base sm:text-lg text-mute max-w-xl">
+              Answers to common questions, plus links into the deeper bits.
+            </p>
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto px-6 py-12">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4 tracking-tight">
-              How can we help?
-            </h2>
-            <p className="text-zinc-600 dark:text-zinc-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-              Find answers to common questions or explore the technical side of
-              CommentDraw.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-16">
-            {supportCards.map((card, idx) => (
-              <div
-                key={idx}
-                className="bg-zinc-50 dark:bg-[#080808] border border-zinc-200 dark:border-zinc-800/50 p-6 rounded-2xl hover:border-red-500/50 transition-all group"
-              >
-                <div className="mb-4 bg-white dark:bg-zinc-900 w-12 h-12 rounded-xl flex items-center justify-center shadow-sm group-hover:bg-red-500/10 transition-colors border border-zinc-100 dark:border-transparent">
-                  {card.icon}
-                </div>
-                <h3 className="font-bold mb-1 text-zinc-800 dark:text-white">
-                  {card.title}
-                </h3>
-                <p className="text-zinc-500 dark:text-zinc-500 text-xs mb-4 leading-relaxed">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-16">
+          {supportCards.map((card, idx) => (
+            <div
+              key={idx}
+              className="border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] p-6 hover:border-ink dark:hover:border-paper transition-colors flex flex-col gap-4"
+            >
+              <div className="flex items-start justify-between">
+                <card.Icon size={22} strokeWidth={1.75} />
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-medium">{card.title}</h3>
+                <p className="text-xs text-mute leading-relaxed mt-1">
                   {card.desc}
                 </p>
-                <button className="text-red-500 text-xs font-bold flex items-center gap-1 hover:gap-2 transition-all">
-                  {card.action} <ExternalLink size={12} />
+              </div>
+              <button className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-punch)] hover:underline underline-offset-4 inline-flex items-center gap-1 self-start cursor-pointer">
+                {card.action}
+                <ExternalLink size={11} />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-y-8 lg:gap-x-12 mb-12">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">▮</span> FAQ
+            </p>
+          </div>
+          <div className="lg:col-span-9 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+            {faqs.map((item, idx) => (
+              <div
+                key={idx}
+                className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between gap-4 py-5 text-left cursor-pointer"
+                  aria-expanded={openFaq === idx}
+                >
+                  <span className="flex items-baseline gap-5">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-punch)]">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-display text-base sm:text-lg font-medium">
+                      {item.q}
+                    </span>
+                  </span>
+                  {openFaq === idx ? (
+                    <Minus size={18} className="shrink-0" />
+                  ) : (
+                    <Plus size={18} className="shrink-0" />
+                  )}
                 </button>
+                <div
+                  className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+                    openFaq === idx ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-sm text-mute leading-relaxed pb-6 pl-10 max-w-3xl">
+                      {item.a}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-
-          <div className="mb-20">
-            <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-              <span className="w-1.5 h-6 bg-red-600 rounded-full"></span>
-              Frequently Asked Questions
-            </h3>
-            <div className="space-y-3">
-              {faqs.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="border border-zinc-200 dark:border-zinc-900 rounded-xl overflow-hidden bg-white dark:bg-[#050505] shadow-sm dark:shadow-none"
-                >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full p-4 text-left flex justify-between items-center hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
-                  >
-                    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                      {item.q}
-                    </span>
-                    <ChevronDown
-                      className={`transition-transform duration-300 ${
-                        openFaq === idx
-                          ? "rotate-180 text-red-600"
-                          : "text-zinc-400 dark:text-zinc-600"
-                      }`}
-                      size={16}
-                    />
-                  </button>
-
-                  {openFaq === idx && (
-                    <div className="p-4 pt-0 text-zinc-600 dark:text-zinc-500 text-sm border-t border-zinc-100 dark:border-zinc-900/50 leading-relaxed mt-2 animate-in fade-in slide-in-from-top-1">
-                      {item.a}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12 p-8 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#0a0a0a] text-center shadow-sm dark:shadow-none">
-            <Mail className="w-6 h-6 text-red-500 mx-auto mb-3" />
-            <h3 className="font-bold mb-2 text-zinc-800 dark:text-white">
-              Questions about these Terms?
-            </h3>
-            <p className="text-zinc-500 text-sm mb-4 font-mono">
-              support@commentdraw.com
-            </p>
-            <button
-              onClick={() => navigate(-1)}
-              className="text-zinc-500 dark:text-zinc-400 hover:text-red-500 flex items-center gap-2 mx-auto text-sm transition-colors font-medium"
-            >
-              <ArrowLeft className="w-4 h-4" /> Back to Previous Page
-            </button>
-          </div>
         </div>
-      </div>
+
+        <div className="border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-12 flex flex-col items-start gap-4">
+          <Mail size={20} className="text-[var(--color-punch)]" strokeWidth={1.75} />
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            Still need help?
+          </p>
+          <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">
+            Email us
+          </h3>
+          <a
+            href="mailto:support@commentdraw.com"
+            className="font-mono text-base text-[var(--color-punch)] underline underline-offset-4 hover:text-ink dark:hover:text-paper transition-colors"
+          >
+            support@commentdraw.com
+          </a>
+        </div>
+      </main>
     </div>
   );
-};
+}
 
 export default Support;

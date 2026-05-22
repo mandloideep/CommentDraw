@@ -1,14 +1,13 @@
-import { logoDark, logoLight } from "../..";
-import { Form, Loader, InfoModal } from "../../components/Common";
+import { Form, Loader, InfoModal, Logo } from "../../components/Common";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { Lock, Mail } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import { Mail, Lock } from "lucide-react";
+import { useDispatch } from "react-redux";
 import { useSignInMutation } from "../../Redux/slices/apiSlice";
+import { setAuth } from "../../Redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 function SignIn() {
-  const theme = useSelector((state) => state.theme.mode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,17 +16,13 @@ function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const formData = [
     {
       label: "Email",
       type: "email",
-      icon: (
-        <Mail
-          size={18}
-          className="absolute top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-      ),
-      placeholder: "Enter your email",
+      icon: <Mail size={14} />,
+      placeholder: "you@domain.com",
       register: register("email", {
         required: "Email is required",
         pattern: {
@@ -39,41 +34,20 @@ function SignIn() {
     {
       label: "Password",
       type: "password",
-      icon: (
-        <Lock
-          size={18}
-          className="absolute top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
-      ),
+      icon: <Lock size={14} />,
       placeholder: "Enter your password",
       register: register("password", {
         required: "Password is required",
-        minLength: {
-          value: 8,
-          message: "Password must be at least 6 characters",
-        },
-        maxLength: {
-          value: 50,
-          message: "Password must be less than 30 characters",
-        },
-        pattern: {
-          value:
-            /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=\S+$).{8,50}$/,
-          message: "Password must contain letters and numbers",
-        },
+        minLength: { value: 8, message: "Password must be at least 8 characters" },
+        maxLength: { value: 50, message: "Password too long" },
       }),
     },
   ];
 
-  const heading = "Welcome Back!";
-  const headingClassName = "text-3xl mb-4";
-
   const [signIn, { data, isLoading, isSuccess, isError, error, reset }] =
     useSignInMutation();
 
-  const handleSignIn = (formValues) => {
-    signIn(formValues);
-  };
+  const handleSignIn = (formValues) => signIn(formValues);
 
   const unverifiedEmail = error?.data?.email || "";
   const resendAttempts = Number(
@@ -83,7 +57,6 @@ function SignIn() {
   useEffect(() => {
     if (isSuccess && data) {
       localStorage.setItem("isSignIn", "true");
-
       dispatch(
         setAuth({
           isAuthenticated: true,
@@ -93,18 +66,26 @@ function SignIn() {
       );
     }
   }, [isSuccess, data, dispatch]);
+
   return (
-    <div className="w-full flex flex-col justify-center items-center dark:text-white">
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper flex flex-col">
+      <div className="px-6 sm:px-10 py-6 border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] flex items-center justify-between">
+        <Logo />
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+          Sign in
+        </p>
+      </div>
+
       {isLoading && <Loader />}
 
       {isSuccess && (
         <InfoModal
           isOpen={true}
           type="success"
-          title="Sign In successfull"
-          message="Signed in successfully !"
+          title="Signed in"
+          message="Welcome back."
           isContainsResendBtn={false}
-          okText="ok"
+          okText="Continue"
           redirectUrl={"/home"}
           onOk={() => {
             reset();
@@ -117,16 +98,14 @@ function SignIn() {
         <InfoModal
           isOpen={true}
           type="error"
-          title={resendAttempts >= 3 ? "Limit Reached" : "SignIn Failed"}
+          title={resendAttempts >= 3 ? "Limit reached" : "Sign in failed"}
           isContainsResendBtn={error?.data?.status === "UNVERIFIED"}
           message={
             resendAttempts >= 3
-              ? "You reached the maximum limit. Try again tomorrow."
+              ? "Maximum attempts reached. Try again tomorrow."
               : error?.data?.message || "Something went wrong."
           }
-          okText={
-            error?.data?.status === "UNVERIFIED" ? "Go to Gmail" : "Try Again"
-          }
+          okText={error?.data?.status === "UNVERIFIED" ? "Open Gmail" : "Try again"}
           redirectUrl={
             error?.data?.status === "UNVERIFIED"
               ? "https://mail.google.com/"
@@ -141,27 +120,36 @@ function SignIn() {
           userEmail={error?.data?.email || ""}
         />
       )}
-      <div className="w-full flex flex-col justify-center items-center">
-        <img
-          src={theme === "dark" ? logoDark : logoLight}
-          className="h-24 w-auto my-4"
-        />
-        <h1 className="text-md text-[#a1a1a1]">Join the creator community</h1>
-      </div>
 
-      <div className="w-full md:w-md md:px-4 mt-4 flex items-center justify-center rounded-xl">
-        <Form
-          formData={formData}
-          headingData={{ heading, headingClassName }}
-          errors={errors}
-          className="bg-[#f2f2f5] dark:bg-[#121212] w-full mx-6 my-6 md:my-0 pl-4 p-2 border border-[#171717] rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 "
-          submitBtnText="Sign In"
-          btnClassName="w-full bg-[var(--orange)] rounded-lg p-2  text-black dark:text-white hover:scale-105 transition-transform "
-          isContainsGoogleSignIn={true}
-          isSignInPage={true}
-          onSubmit={handleSubmit(handleSignIn)}
-        />
-      </div>
+      <main className="flex-1 grid lg:grid-cols-12 px-6 sm:px-10 py-12">
+        <div className="lg:col-span-3 mb-8 lg:mb-0">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            <span className="text-[var(--color-punch)]">01</span> / Welcome back
+          </p>
+        </div>
+        <div className="lg:col-span-6 lg:col-start-4">
+          <h1
+            className="font-display font-semibold tracking-[-0.04em] leading-[0.95] mb-3"
+            style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)" }}
+          >
+            Sign in
+            <span className="text-[var(--color-punch)]">.</span>
+          </h1>
+          <p className="text-sm sm:text-base text-mute mb-10">
+            Pick up where you left off.
+          </p>
+
+          <Form
+            formData={formData}
+            errors={errors}
+            submitBtnText="Sign in"
+            isContainsGoogleSignIn={true}
+            isSignInPage={true}
+            isAuthenticationForm={true}
+            onSubmit={handleSubmit(handleSignIn)}
+          />
+        </div>
+      </main>
     </div>
   );
 }

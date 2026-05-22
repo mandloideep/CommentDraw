@@ -1,7 +1,23 @@
 import { Upload, Pencil, User } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useProfileLogic } from "./hooks/useProfileLogic";
-import { useEffect } from "react";
+
+function FieldInput({ value, onChange, disabled, maxLength = 50 }) {
+  return (
+    <input
+      type="text"
+      value={value}
+      disabled={disabled}
+      maxLength={maxLength}
+      onChange={(e) => onChange(e.target.value)}
+      className={`w-full bg-transparent border-0 border-b-2 px-0 py-2 text-base focus:outline-none transition-colors ${
+        disabled
+          ? "border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] text-mute"
+          : "border-ink dark:border-paper text-ink dark:text-paper focus:border-[var(--color-punch)]"
+      }`}
+    />
+  );
+}
 
 function ProfileSection({ dashboardData, refetchDashboard, setModal }) {
   const fileInputRef = useRef();
@@ -9,20 +25,10 @@ function ProfileSection({ dashboardData, refetchDashboard, setModal }) {
   const [lastName, setLastName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
-  const [editSnapshot, setEditSnapshot] = useState({
-    firstName: "",
-    lastName: "",
-  });
-  const [inputErrors, setInputErrors] = useState({
-    firstName: "",
-    lastName: "",
-  });
+  const [editSnapshot, setEditSnapshot] = useState({ firstName: "", lastName: "" });
+  const [inputErrors, setInputErrors] = useState({ firstName: "", lastName: "" });
 
-  const {
-    handleFileChange: handleFileChangeLogic,
-    handleUpdateName,
-    isChangingName,
-  } = useProfileLogic(
+  const { handleFileChange, handleUpdateName, isChangingName } = useProfileLogic(
     setModal,
     setAvatarUploading,
     refetchDashboard,
@@ -38,150 +44,141 @@ function ProfileSection({ dashboardData, refetchDashboard, setModal }) {
     }
   }, [dashboardData]);
 
-  const handleAvatarClick = () => {
-    fileInputRef.current.click();
-  };
-
   const validateName = (name, field) => {
-    if (name.trim().length === 0) {
-      return `${field} cannot be empty`;
-    } else if (name.trim().length < 2) {
-      return `${field} must be at least 2 characters`;
-    }
+    if (name.trim().length === 0) return `${field} cannot be empty`;
+    if (name.trim().length < 2) return `${field} must be at least 2 characters`;
     return "";
   };
 
   const handleFirstNameChange = (val) => {
     setFirstName(val);
     if (isEditing) {
-      setInputErrors((prev) => ({
-        ...prev,
-        firstName: validateName(val, "First Name"),
-      }));
+      setInputErrors((p) => ({ ...p, firstName: validateName(val, "First name") }));
     }
   };
-
   const handleLastNameChange = (val) => {
     setLastName(val);
     if (isEditing) {
-      setInputErrors((prev) => ({
-        ...prev,
-        lastName: validateName(val, "Last Name"),
-      }));
+      setInputErrors((p) => ({ ...p, lastName: validateName(val, "Last name") }));
     }
   };
 
+  const disabled =
+    !isEditing ||
+    firstName.trim().length < 2 ||
+    lastName.trim().length < 2 ||
+    (firstName === editSnapshot.firstName && lastName === editSnapshot.lastName);
+
   return (
-    <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <User size={18} />
-        <h2 className="text-lg font-medium">Profile Information</h2>
+    <section className="border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] p-6 sm:p-8">
+      <div className="flex items-center justify-between mb-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+          <span className="text-[var(--color-punch)]">01</span> / Profile
+        </p>
+        <User size={16} className="text-mute" strokeWidth={1.75} />
       </div>
 
-      <p className="text-sm text-gray-400 mb-6">
-        Update your personal information and profile picture
+      <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] mb-2">
+        Personal information
+      </h2>
+      <p className="text-sm text-mute mb-8">
+        Update your name and profile picture.
       </p>
 
-      {/* Avatar */}
-      <div className="flex items-center gap-6 mb-6">
-        <img
-          src={dashboardData?.user?.avatarUrl}
-          alt="avatar"
-          className="h-20 w-20 rounded-full object-cover"
-        />
+      <div className="flex items-center gap-5 mb-8">
+        {dashboardData?.user?.avatarUrl ? (
+          <img
+            src={dashboardData.user.avatarUrl}
+            alt=""
+            className="h-16 w-16 object-cover border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+          />
+        ) : (
+          <div className="h-16 w-16 grid place-items-center border border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] font-display text-2xl">
+            {(firstName || "?").charAt(0).toUpperCase()}
+          </div>
+        )}
         <button
-          onClick={handleAvatarClick}
-          className="flex items-center gap-2 rounded-lg border-zinc-200 dark:border-zinc-800 px-4 py-2 text-sm hover:bg-white/10"
+          onClick={() => fileInputRef.current.click()}
+          className="h-10 px-4 inline-flex items-center gap-2 border-2 border-ink dark:border-paper font-mono text-[10px] uppercase tracking-[0.18em] hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink transition-colors cursor-pointer"
         >
-          <Upload size={16} />{" "}
-          {avatarUploading ? "Uploading..." : "Change Picture"}
+          <Upload size={14} />
+          {avatarUploading ? "Uploading..." : "Change picture"}
         </button>
         <input
           type="file"
           accept="image/png, image/jpeg, image/webp"
           ref={fileInputRef}
-          onChange={handleFileChangeLogic}
+          onChange={handleFileChange}
           className="hidden"
         />
       </div>
 
-      {/* NAME FIELDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="text-sm dark:text-gray-400 flex items-center justify-between">
-            First Name
+          <div className="flex items-center justify-between">
+            <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+              First name
+            </label>
             <button
               type="button"
               onClick={() => {
                 setEditSnapshot({ firstName, lastName });
                 setIsEditing(true);
               }}
-              className="dark:text-gray-400 hover:text-orange-600"
+              className="text-mute hover:text-[var(--color-punch)]"
+              aria-label="Edit name"
             >
-              <Pencil size={14} />
+              <Pencil size={12} />
             </button>
-          </label>
-
-          <input
-            type="text"
+          </div>
+          <FieldInput
             value={firstName}
+            onChange={handleFirstNameChange}
             disabled={!isEditing}
-            maxLength={50}
-            onChange={(e) => handleFirstNameChange(e.target.value)}
-            className={`mt-2 w-full rounded-lg border px-4 py-2 focus:outline-none ${
-              isEditing
-                ? "border-zinc-900 dark:border-amber-50 dark:bg-[#050505]"
-                : "dark:bg-[#111111] bg-[#f2f2f5] dark:text-gray-400 border-zinc-200 dark:border-zinc-800"
-            }`}
           />
           {isEditing && inputErrors.firstName && (
-            <p className="text-md text-red-500 mt-1 animate-pulse">
+            <p className="text-xs text-[var(--color-punch)] mt-1 font-mono">
               {inputErrors.firstName}
             </p>
           )}
           {isEditing && !inputErrors.firstName && (
-            <p className="text-md text-gray-500 mt-1">{firstName.length}/50</p>
+            <p className="text-xs text-mute mt-1 font-mono">{firstName.length}/50</p>
           )}
         </div>
 
         <div>
-          <label className="text-sm dark:text-gray-400">Last Name</label>
-          <input
-            type="text"
+          <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+            Last name
+          </label>
+          <FieldInput
             value={lastName}
+            onChange={handleLastNameChange}
             disabled={!isEditing}
-            maxLength={50}
-            onChange={(e) => handleLastNameChange(e.target.value)}
-            className={`mt-2 w-full rounded-lg border px-4 py-2 focus:outline-none ${
-              isEditing
-                ? "border-zinc-900 dark:border-amber-50 dark:bg-[#050505]"
-                : "dark:bg-[#111111] bg-[#f2f2f5] dark:text-gray-400 border-zinc-200 dark:border-zinc-800"
-            }`}
           />
           {isEditing && inputErrors.lastName && (
-            <p className="text-md text-red-500 mt-1 animate-pulse">
+            <p className="text-xs text-[var(--color-punch)] mt-1 font-mono">
               {inputErrors.lastName}
             </p>
           )}
           {isEditing && !inputErrors.lastName && (
-            <p className="text-md text-gray-500 mt-1">{lastName.length}/50</p>
+            <p className="text-xs text-mute mt-1 font-mono">{lastName.length}/50</p>
           )}
         </div>
 
         <div className="md:col-span-2">
-          <label className="text-sm dark:text-gray-400">Email</label>
-          <input
-            type="email"
+          <label className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+            Email
+          </label>
+          <FieldInput
             value={dashboardData?.user?.email || ""}
+            onChange={() => {}}
             disabled
-            className="mt-2 w-full rounded-lg dark:bg-[#111111] bg-[#f2f2f5] border border-zinc-200 dark:border-zinc-800 px-4 py-2 text-gray-500"
           />
-          <p className="mt-1 text-xs text-gray-500">Email cannot be changed.</p>
+          <p className="text-xs text-mute mt-1">Email cannot be changed.</p>
         </div>
       </div>
 
-      {/* ACTIONS */}
-      <div className="flex justify-end gap-3 mt-6">
+      <div className="flex justify-end gap-3 mt-8">
         {isEditing && (
           <button
             type="button"
@@ -190,31 +187,18 @@ function ProfileSection({ dashboardData, refetchDashboard, setModal }) {
               setLastName(editSnapshot.lastName);
               setIsEditing(false);
             }}
-            className="rounded-lg border border-zinc-200 dark:border-zinc-800 px-6 py-2 hover:bg-zinc-200 dark:hover:bg-white/10"
+            className="h-10 px-5 border-2 border-ink dark:border-paper bg-transparent font-mono text-[10px] uppercase tracking-[0.18em] hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink transition-colors cursor-pointer"
           >
             Cancel
           </button>
         )}
-
         <button
           type="button"
-          disabled={
-            !isEditing ||
-            firstName.trim().length < 2 ||
-            lastName.trim().length < 2 ||
-            (firstName === editSnapshot.firstName &&
-              lastName === editSnapshot.lastName)
-          }
+          disabled={disabled}
           onClick={handleUpdateName}
-          className={`rounded-lg px-6 py-2 font-medium ${
-            !isEditing ||
-            (firstName === editSnapshot.firstName &&
-              lastName === editSnapshot.lastName)
-              ? "bg-zinc-200 dark:bg-zinc-700 cursor-not-allowed"
-              : "bg-orange-500 hover:bg-orange-600"
-          }`}
+          className="h-10 px-5 border-2 border-ink dark:border-paper bg-ink text-paper dark:bg-paper dark:text-ink font-mono text-[10px] uppercase tracking-[0.18em] hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
-          {isChangingName ? "Saving..." : "Save Changes"}
+          {isChangingName ? "Saving..." : "Save changes"}
         </button>
       </div>
     </section>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Crown, Gift, CircleStar, Gem } from "lucide-react";
 import { PlanCard, InfoModal } from "../../components/Common";
 import { useDashboardAPIQuery } from "../../Redux/slices/apiSlice";
 import { usePayment } from "../../components/Settings/hooks/usePayment";
@@ -7,39 +6,36 @@ import { usePayment } from "../../components/Settings/hooks/usePayment";
 const subscriptionPlan = [
   {
     id: 1,
-    icon: <Gift />,
     name: "Free",
-    price: "₹0",
-    description: "Perfect for getting started with giveaways",
+    price: "$0",
+    description: "Perfect to try out a fair draw.",
     features: [
       "3 giveaways per month",
-      "Up to 300 comments",
-      "2 winner per giveaway",
+      "Up to 300 comments per draw",
+      "2 winners per giveaway",
     ],
-    cta: "Start Free",
+    cta: "Start free",
   },
   {
     id: 2,
-    icon: <CircleStar />,
     name: "Gold",
-    price: "₹49",
-    description: "Ideal for frequent organizers with advanced features",
+    price: "$9",
+    description: "For creators running regular draws.",
     features: [
       "10 giveaways per month",
-      "Up to 600 comments",
+      "Up to 600 comments per draw",
       "Up to 5 winners per giveaway",
     ],
     cta: "Go Gold",
   },
   {
     id: 3,
-    icon: <Gem />,
     name: "Diamond",
-    price: "₹79",
-    description: "Unlimited giveaways and top-tier features for pros",
+    price: "$19",
+    description: "Unlimited draws for power users.",
     features: [
       "Unlimited giveaways",
-      "1000 comments",
+      "Up to 1,000 comments per draw",
       "10 winners per giveaway",
     ],
     cta: "Go Diamond",
@@ -55,7 +51,7 @@ function UpgradePlan() {
     type: "info",
     okText: "OK",
     isContainsResendBtn: false,
-    onOk: () => setModal({ ...modal, open: false }),
+    onOk: () => setModal((prev) => ({ ...prev, open: false })),
   });
 
   const currentPlan = dashboardData?.user?.subscriptionType || "FREE";
@@ -63,31 +59,42 @@ function UpgradePlan() {
   const { handlePayment } = usePayment(userEmail, setModal);
 
   return (
-    <div className="min-h-screen dark:bg-[#0a0a0a] flex flex-col items-center p-8 gap-12 text-white">
-      <div className="flex flex-col items-center gap-6 mt-10">
-        <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-orange-500/30 bg-gradient-to-r from-orange-950/20 to-yellow-950/20 backdrop-blur-sm">
-          <Crown className="text-yellow-500" size={24} />
-          <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
-            Choose Your Plan
-          </h2>
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper">
+      <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 sm:px-10 py-12">
+        <div className="grid lg:grid-cols-12 gap-y-6 lg:gap-x-12">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">▮</span> Pricing
+            </p>
+          </div>
+          <div className="lg:col-span-9 flex flex-col gap-4">
+            <h1
+              className="font-display font-semibold tracking-[-0.04em] leading-[0.95]"
+              style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+            >
+              Choose your plan
+              <span className="text-[var(--color-punch)]">.</span>
+            </h1>
+            <p className="text-base sm:text-lg text-mute max-w-2xl">
+              Unlock CommentDraw's full power with a plan that fits your audience.
+            </p>
+          </div>
         </div>
-
-        <p className="text-[#a1a1a1] text-center max-w-2xl text-lg">
-          Unlock the full potential of CommentDraw with our flexible pricing plans
-          designed for creators of all sizes
-        </p>
       </div>
 
-      <div className="flex flex-wrap justify-center items-stretch gap-8 w-full max-w-7xl mb-20">
-        {subscriptionPlan.map((plan) => (
-          <PlanCard
-            key={plan.id}
-            plan={plan}
-            isCurrent={currentPlan === plan.name.toUpperCase()}
-            onClick={() => handlePayment(plan.name)}
-          />
-        ))}
+      <div className="px-6 sm:px-10 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch max-w-6xl">
+          {subscriptionPlan.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              isCurrent={currentPlan === plan.name.toUpperCase()}
+              onClick={() => handlePayment(plan.name)}
+            />
+          ))}
+        </div>
       </div>
+
       {modal.open && (
         <InfoModal
           isOpen={modal.open}

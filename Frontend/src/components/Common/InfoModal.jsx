@@ -1,7 +1,20 @@
 import { useEffect, useState } from "react";
+import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
 import useTimeout from "../../hook/useTimeout";
 import { useLazyResendVerificationQuery } from "../../Redux/slices/apiSlice";
 import Loader from "./Loader";
+
+const TYPE_ICON = {
+  success: CheckCircle2,
+  error: AlertTriangle,
+  info: Info,
+};
+
+const TYPE_ACCENT = {
+  success: "text-[#1e8a4a]",
+  error: "text-[var(--color-punch)]",
+  info: "text-[var(--color-punch-2)]",
+};
 
 export default function InfoModal({
   isOpen,
@@ -17,12 +30,6 @@ export default function InfoModal({
   userEmail = "",
 }) {
   if (!isOpen) return null;
-
-  const colorMap = {
-    success: "from-[#22c55e]/20 to-[#bbf7d0]/10 text-[#22c55e]",
-    error: "from-[#ff3333]/20 to-[#ff9933]/10 text-[#ff3333]",
-    info: "from-[#ff9933]/20 to-[#fff176]/10 text-[#ffcc33]",
-  };
 
   const MAX_ATTEMPTS = 3;
   const COOL_DOWN_15M = 15 * 60;
@@ -48,7 +55,6 @@ export default function InfoModal({
   useEffect(() => {
     const storedTimestamp = localStorage.getItem(TIMESTAMP_KEY);
     const now = Date.now();
-
     if (storedTimestamp && now - Number(storedTimestamp) >= RESET_TIME_24H) {
       localStorage.setItem(ATTEMPTS_KEY, "0");
       localStorage.removeItem(TIMESTAMP_KEY);
@@ -56,7 +62,6 @@ export default function InfoModal({
     }
   }, [ATTEMPTS_KEY, TIMESTAMP_KEY]);
 
-  // initial timer
   useEffect(() => {
     if (isContainsResendBtn) setSecondsLeft(COOL_DOWN_15M);
   }, [isContainsResendBtn]);
@@ -67,62 +72,45 @@ export default function InfoModal({
 
   useEffect(() => {
     if (isLoading) {
-      setModalTitle("Please Wait");
+      setModalTitle("Please wait");
       setModalMsg("Resending verification email...");
       setModalType("info");
     }
-
     if (isSuccess) {
-      setModalTitle("Success");
-      setModalMsg("Verification email sent successfully!");
+      setModalTitle("Sent");
+      setModalMsg("Verification email sent successfully.");
       setModalType("success");
-
-      if (data?.token) {
-        localStorage.setItem("SignUpToken", data.token);
-      }
+      if (data?.token) localStorage.setItem("SignUpToken", data.token);
     }
-
     if (isError) {
       if (error?.status === 429) {
-        setModalTitle("Limit Reached");
-        setModalMsg(
-          "You reached maximum limit of resending verification link. Try again tomorrow."
-        );
+        setModalTitle("Limit reached");
+        setModalMsg("You hit the daily limit for resending. Try again tomorrow.");
         setModalType("error");
         setResendAttempts(MAX_ATTEMPTS);
         localStorage.setItem(ATTEMPTS_KEY, MAX_ATTEMPTS.toString());
         setDisableBtn(true);
         return;
-      } else {
-        setModalTitle("Error");
-        setModalMsg(error?.data?.Error || "Failed to resend. Try again later.");
-        setModalType("error");
       }
+      setModalTitle("Error");
+      setModalMsg(error?.data?.Error || "Failed to resend. Try again later.");
+      setModalType("error");
     }
   }, [isLoading, isSuccess, isError]);
 
   const handleResend = () => {
-    // 3 Attempts per signup session limit
     if (resendAttempts >= MAX_ATTEMPTS) {
-      setModalTitle("Limit Reached");
-      setModalMsg(
-        "You reached maximum limit of resend verification email. Try signing up again."
-      );
+      setModalTitle("Limit reached");
+      setModalMsg("Maximum resends reached. Sign up again to start fresh.");
       setModalType("error");
       return;
     }
-
     const token = localStorage.getItem("SignUpToken");
     resendVerification(token);
-
     const updated = resendAttempts + 1;
     setResendAttempts(updated);
     localStorage.setItem(ATTEMPTS_KEY, updated.toString());
-
-    if (updated === 1) {
-      localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
-    }
-
+    if (updated === 1) localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
     setDisableBtn(true);
     setSecondsLeft(COOL_DOWN_15M);
   };
@@ -131,70 +119,93 @@ export default function InfoModal({
     if (redirectUrl) window.location.href = redirectUrl;
     else if (onOk) onOk();
   };
-
   const handleCancel = () => onCancel && onCancel();
 
+  const Icon = TYPE_ICON[modalType] || Info;
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-[9999] animate-fadeIn">
-      <div
-        className={`relative w-[90%] max-w-md text-center text-white border border-[#2a2a2a] bg-gradient-to-br ${colorMap[modalType]} rounded-2xl p-8`}
-      >
-        <h2 className="text-2xl font-bold mb-3">{modalTitle}</h2>
-
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <p className="text-gray-300 text-sm mb-6">{modalMsg}</p>
-        )}
-
-        <div className="flex justify-center gap-4 mt-4">
-          {cancelText && (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-ink/70 px-4">
+      <div className="relative w-full max-w-md bg-paper dark:bg-ink text-ink dark:text-paper border-2 border-ink dark:border-paper rounded-none">
+        <div className="flex items-start justify-between border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 py-4">
+          <div className="flex items-center gap-3">
+            <Icon size={18} className={TYPE_ACCENT[modalType]} strokeWidth={2.25} />
+            <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute">
+              {modalType}
+            </span>
+          </div>
+          {onCancel && (
             <button
+              type="button"
               onClick={handleCancel}
-              className="px-5 py-2 rounded-lg border bg-[#121212] hover:bg-[#1c1c1c]"
+              aria-label="Close"
+              className="text-mute hover:text-ink dark:hover:text-paper"
             >
-              {cancelText}
+              <X size={18} />
             </button>
           )}
-          <button
-            onClick={handleOk}
-            className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#ff3333] via-[#ff6b0f] to-[#ff9933]"
-          >
-            {okText}
-          </button>
         </div>
 
-        {isContainsResendBtn && (
-          <div className="mt-4">
-            {resendAttempts < MAX_ATTEMPTS ? (
-              <>
-                <button
-                  onClick={handleResend}
-                  disabled={disableBtn}
-                  className={`hover:text-zinc-500 ${
-                    disableBtn ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  Resend
-                </button>
+        <div className="px-6 py-8">
+          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] mb-3">
+            {modalTitle}
+          </h2>
+          {isLoading ? (
+            <div className="py-4">
+              <Loader />
+            </div>
+          ) : (
+            <p className="text-sm text-mute leading-relaxed">{modalMsg}</p>
+          )}
+        </div>
 
-                {disableBtn && (
-                  <div className="text-sm text-gray-400 mt-1">
-                    {Math.floor(secondsLeft / 60)}m{" "}
-                    {secondsLeft % 60 < 10
-                      ? "0" + (secondsLeft % 60)
-                      : secondsLeft % 60}
-                    s remaining
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="text-sm text-[#ff3333] font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20">
-                Maximum limit reached for today.
-              </p>
+        <div className="px-6 pb-6 flex flex-col gap-3">
+          <div className="flex gap-3 justify-end">
+            {cancelText && (
+              <button
+                onClick={handleCancel}
+                className="h-10 px-5 font-mono text-xs uppercase tracking-tight border-2 border-ink dark:border-paper bg-paper text-ink dark:bg-ink dark:text-paper hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink transition-colors cursor-pointer"
+              >
+                {cancelText}
+              </button>
             )}
+            <button
+              onClick={handleOk}
+              className="h-10 px-5 font-mono text-xs uppercase tracking-tight border-2 border-ink dark:border-paper bg-ink text-paper dark:bg-paper dark:text-ink hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper transition-colors cursor-pointer"
+            >
+              {okText}
+            </button>
           </div>
-        )}
+
+          {isContainsResendBtn && (
+            <div className="border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] pt-3 mt-1">
+              {resendAttempts < MAX_ATTEMPTS ? (
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    onClick={handleResend}
+                    disabled={disableBtn}
+                    className={`font-mono text-xs uppercase tracking-[0.14em] underline-offset-4 ${
+                      disableBtn
+                        ? "opacity-40 cursor-not-allowed"
+                        : "hover:underline hover:text-[var(--color-punch)] cursor-pointer"
+                    }`}
+                  >
+                    Resend verification
+                  </button>
+                  {disableBtn && (
+                    <span className="font-mono text-xs text-mute">
+                      {Math.floor(secondsLeft / 60)}m
+                      {String(secondsLeft % 60).padStart(2, "0")}s
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs font-mono uppercase tracking-tight text-[var(--color-punch)]">
+                  Daily resend limit reached
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

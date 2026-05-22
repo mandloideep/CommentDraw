@@ -1,61 +1,81 @@
-import React from "react";
+import { Link2, Filter, Dices, Trophy } from "lucide-react";
+
+const steps = [
+  {
+    Icon: Link2,
+    title: "Paste links",
+    description: "Drop up to 3 YouTube video URLs into the draw setup.",
+  },
+  {
+    Icon: Filter,
+    title: "Fetch comments",
+    description: "We pull every comment via the official YouTube Data API — quick, clean, read-only.",
+  },
+  {
+    Icon: Dices,
+    title: "Filter & draw",
+    description: "Add optional keyword filters. Deduplicate by user. One tap runs the random draw.",
+  },
+  {
+    Icon: Trophy,
+    title: "Reveal winners",
+    description: "Instant animated reveal. Export the list, or run another draw to replace no-shows.",
+  },
+];
 
 function WorkingSection() {
-  const steps = [
-    {
-      step: "1",
-      title: "Add Video Links",
-      description: ["Paste up to 5 YouTube video URLs for your giveaway draw."],
-    },
-    {
-      step: "2",
-      title: "Fetch Comments",
-      description: [
-        "CommentDraw grabs all comments from your videos quickly and safely.",
-      ],
-    },
-    {
-      step: "3",
-      title: "Add Keywords",
-      description: [
-        "Add keywords (optional) to focus on specific comments. Applied before deduplication.",
-      ],
-    },
-    {
-      step: "4",
-      title: "Pick Winners",
-      description: [
-        "Deduplicate commenters, run fair random selection and get winners instantly.",
-      ],
-    },
-  ];
-
   return (
-    <div className="bg-[#fafafa] flex flex-col justify-center items-center p-8 gap-8 dark:bg-[#111111] dark:text-white">
-      <div className="flex flex-col items-center gap-4 mb-8">
-        <h2 className="text-4xl">How It Works</h2>
-        <p className="text-xl text-[#a1a1a1]">
-          Pick winners from YouTube comments in just 4 simple steps
-        </p>
-      </div>
-
-      <div className="flex flex-col md:flex-row justify-center items-center gap-4">
-        {steps.map((step) => (
-          <div
-            key={step.step}
-            className="flex flex-col justify-center items-center gap-4"
-          >
-            <div className="bg-gradient-to-r from-[#ff4500] via-[#e1780f] to-[#d37815] font-bold text-lg w-fit py-4 px-6 rounded-full">
-              {step.step}
-            </div>
-            <h3 className="text-base">{step.title}</h3>
-            <div className="w-3/5 text-[#a1a1a1] text-sm flex  items-center justify-center ">
-              {step.description}
-            </div>
+    <section
+      id="working"
+      className="w-full border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+    >
+      <div className="px-5 sm:px-8 lg:px-12 py-20 sm:py-28">
+        <div className="grid lg:grid-cols-12 gap-y-10 lg:gap-x-12 mb-16">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">02</span> / How it works
+            </p>
           </div>
-        ))}
+          <div className="lg:col-span-9">
+            <h2
+              className="font-display font-semibold leading-[0.95] tracking-[-0.04em] max-w-3xl"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+            >
+              Four steps. Zero spreadsheets.
+              <span className="text-[var(--color-punch)]">.</span>
+            </h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+          {steps.map((step, i) => (
+            <div
+              key={step.title}
+              className={`p-6 sm:p-8 flex flex-col gap-4 border-b sm:border-b-0 border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] ${
+                i !== steps.length - 1
+                  ? "sm:border-r border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]"
+                  : ""
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <step.Icon
+                  size={28}
+                  strokeWidth={1.75}
+                  className="text-ink dark:text-paper"
+                />
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-punch)]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className="font-display text-xl sm:text-2xl font-semibold tracking-[-0.02em] mt-2">
+                {step.title}
+              </h3>
+              <p className="text-sm text-mute leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

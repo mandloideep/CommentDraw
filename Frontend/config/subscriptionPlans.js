@@ -6,13 +6,13 @@ const SUBSCRIPTION_PLANS = {
     maxComments: 300,
   },
   GOLD: {
-    price: 49,
+    price: 9,
     maxGiveaways: 10,
     maxWinners: 5,
     maxComments: 600,
   },
   DIAMOND: {
-    price: 79,
+    price: 19,
     maxGiveaways: -1,
     maxWinners: 10,
     maxComments: 1000,

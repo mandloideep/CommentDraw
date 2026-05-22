@@ -9,65 +9,85 @@ import {
   Moon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { logoDark, logoLight } from "../../";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../../Redux/slices/themeSlice";
 import { useState } from "react";
+import { Logo } from "../Common";
+
+const menuItems = [
+  { label: "Home", to: "/home", Icon: House },
+  { label: "Dashboard", to: "/dashboard", Icon: ChartColumn },
+  { label: "History", to: "/history", Icon: History },
+  { label: "Settings", to: "/settings", Icon: Settings },
+];
+
+// eslint-disable-next-line no-unused-vars
+function NavItem({ to, Icon, label, index, onClick }) {
+  return (
+    <NavLink
+      to={to}
+      onClick={onClick}
+      className={({ isActive }) =>
+        `group relative flex items-center gap-3 pl-6 pr-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors ${
+          isActive
+            ? "text-ink dark:text-paper"
+            : "text-mute hover:text-ink dark:hover:text-paper"
+        }`
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className={`absolute left-0 top-0 bottom-0 w-1 transition-colors ${
+              isActive ? "bg-[var(--color-punch)]" : "bg-transparent"
+            }`}
+          />
+          <span className="text-[var(--color-punch)] font-mono text-[10px] w-6 shrink-0">
+            {index}
+          </span>
+          <Icon size={16} strokeWidth={1.75} />
+          <span>{label}</span>
+        </>
+      )}
+    </NavLink>
+  );
+}
 
 function AppHeader({ navigationLocked }) {
   const theme = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
-    { label: "Home", to: "/home", icon: <House size={20} /> },
-    { label: "Dashboard", to: "/dashboard", icon: <ChartColumn size={20} /> },
-    { label: "History", to: "/history", icon: <History size={20} /> },
-    { label: "Settings", to: "/settings", icon: <Settings size={20} /> },
-  ];
-
   const SidebarContent = (
-    <div className="flex flex-col h-full">
-      {/* Logo Section */}
-      <div className="flex items-center justify-start px-6 py-6 mb-4">
-        <img
-          src={theme === "dark" ? logoDark : logoLight}
-          alt="Logo"
-          className="h-8 md:h-10 w-auto"
-        />
+    <div className="flex flex-col h-full bg-paper dark:bg-ink">
+      <div className="px-6 py-6 border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+        <Logo size={22} />
       </div>
 
-      {/* Navigation Links */}
-      <nav className="flex flex-col gap-2 px-4 flex-1">
-        {menuItems.map((item) => (
-          <NavLink
+      <p className="px-6 pt-6 pb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+        Navigation
+      </p>
+
+      <nav className="flex flex-col flex-1">
+        {menuItems.map((item, i) => (
+          <NavItem
             key={item.to}
             to={item.to}
-            onClick={() => setIsMenuOpen(false)} // Close menu on mobile click
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${
-                isActive
-                  ? "bg-[#ff3333] text-white shadow-lg shadow-red-500/20" // Active: Red bg, White text
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#1f1f1f] hover:text-black dark:hover:text-white"
-              }`
-            }
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </NavLink>
+            Icon={item.Icon}
+            label={item.label}
+            index={String(i + 1).padStart(2, "0")}
+            onClick={() => setIsMenuOpen(false)}
+          />
         ))}
       </nav>
 
-      {/* Bottom Section: Theme Toggle */}
-      <div className="p-4 border-t border-gray-200 dark:border-[#1f1f1f]">
+      <div className="p-4 border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
         <button
           onClick={() => dispatch(toggleTheme())}
-          className="flex items-center justify-center w-full gap-2 p-3 rounded-xl bg-gray-100 dark:bg-[#1f1f1f] text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-[#2a2a2a] transition-colors"
+          className="w-full h-11 flex items-center justify-center gap-2 border-2 border-ink dark:border-paper bg-transparent hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink font-mono text-[10px] uppercase tracking-[0.18em] transition-colors cursor-pointer"
         >
-          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-          <span className="text-sm font-medium">
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
-          </span>
+          {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+          <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
         </button>
       </div>
     </div>
@@ -75,38 +95,40 @@ function AppHeader({ navigationLocked }) {
 
   return (
     <>
-      {/* 1. Mobile Header */}
-      <header className="lg:hidden w-full flex items-center justify-between border-b border-[#f7f7f7] dark:border-[#1f1f1f] px-4 py-3 bg-[#fafafa] dark:bg-[#0a0a0a]">
-        <div className="flex items-center">
-          <button onClick={() => setIsMenuOpen(true)}>
-            <Menu color={theme === "dark" ? "white" : "black"} size={28} />
+      <header className="lg:hidden w-full flex items-center justify-between border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-4 py-3 bg-paper dark:bg-ink">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="Open menu"
+            className="h-9 w-9 grid place-items-center text-ink dark:text-paper"
+          >
+            <Menu size={20} />
           </button>
-          <img
-            src={theme === "dark" ? logoDark : logoLight}
-            alt="Logo"
-            className="h-8 w-auto"
-          />
+          <Logo size={20} />
         </div>
         <button
           onClick={() => dispatch(toggleTheme())}
-          className="flex justify-center items-center rounded-xl h-12 w-12 cursor-pointer hover:bg-[#f7f7f7] hover:dark:bg-[#0f0f0f]"
+          aria-label="Toggle theme"
+          className="h-9 w-9 grid place-items-center text-mute hover:text-[var(--color-punch)]"
         >
-          {theme === "dark" ? <Sun color="#FFFFFF" /> : <Moon />}
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </header>
 
       <div className="relative">
         <aside
-          className={`fixed top-0 left-0 z-50 h-screen w-64 
-      ${navigationLocked ? "pointer-events-none opacity-60" : ""}
-      bg-[#fafafa] dark:bg-[#0a0a0a] border-r border-[#f7f7f7] 
-      dark:border-[#1f1f1f] transition-transform duration-300 ease-in-out
-      ${isMenuOpen ? "translate-x-0" : "-translate-x-full"} 
-      lg:translate-x-0 lg:static lg:block shrink-0`}
+          className={`fixed top-0 left-0 z-50 h-screen w-72
+            ${navigationLocked ? "pointer-events-none opacity-60" : ""}
+            border-r border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] transition-transform duration-300 ease-in-out
+            ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0 lg:static lg:block shrink-0`}
         >
           <div className="lg:hidden flex justify-end p-4">
-            <button onClick={() => setIsMenuOpen(false)}>
-              <X color={theme === "dark" ? "white" : "black"} size={28} />
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <X size={20} className="text-ink dark:text-paper" />
             </button>
           </div>
 
@@ -120,7 +142,7 @@ function AppHeader({ navigationLocked }) {
 
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-ink/60 z-40 lg:hidden"
           onClick={() => setIsMenuOpen(false)}
         />
       )}

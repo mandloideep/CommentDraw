@@ -1,106 +1,45 @@
-import React from "react";
-import Lottie from "lottie-react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-// Ensure the path is correct relative to your folder structure
-import animationData from "../../assets/Page Not Found 404.json";
+import { ArrowUpRight } from "lucide-react";
 
-const NotFound = () => {
-  const theme = useSelector((state) => state.theme.mode);
-  const isDark = theme === "dark";
-
+function NotFound() {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        width: "100%",
-        textAlign: "center",
-        backgroundColor: isDark ? "#121212" : "#ffffff", // Dynamic theme background
-        color: isDark ? "#f7fafc" : "#1a202c", // Dynamic text color
-        fontFamily: "'Inter', sans-serif",
-        padding: "20px",
-        overflow: "hidden",
-        transition: "background-color 0.3s ease",
-      }}
-    >
-      {/* Immersive Lottie Animation - Scaled for high impact */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "650px",
-          height: "auto",
-          marginBottom: "-10px",
-        }}
-      >
-        <Lottie
-          animationData={animationData}
-          loop={true}
-          autoplay={true}
-          style={{ width: "100%", height: "100%" }}
-        />
+    <div className="min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper flex flex-col">
+      <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 sm:px-12 py-6 flex items-center justify-between">
+        <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute">
+          Error · Not Found
+        </span>
+        <span className="font-mono text-xs uppercase tracking-[0.18em] text-mute">
+          404 / 404
+        </span>
       </div>
 
-      {/* Professional Copywriting */}
-      <h1
-        style={{
-          fontSize: "clamp(2.5rem, 6vw, 3.5rem)",
-          fontWeight: "800",
-          marginBottom: "16px",
-          letterSpacing: "-0.025em",
-        }}
-      >
-        Page Not Found
-      </h1>
-
-      <p
-        style={{
-          fontSize: "1.125rem",
-          color: isDark ? "#a0aec0" : "#4a5568",
-          marginBottom: "40px",
-          maxWidth: "550px",
-          lineHeight: "1.6",
-        }}
-      >
-        The resource you are looking for might have been removed, had its name
-        changed, or is temporarily unavailable. Please verify the URL or return
-        to the homepage.
-      </p>
-
-      {/* Primary Action Button */}
-      <Link
-        to="/"
-        style={{
-          padding: "16px 40px",
-          backgroundColor: "#f97316", // CommentDraw Brand Orange
-          color: "#ffffff",
-          textDecoration: "none",
-          borderRadius: "12px",
-          fontSize: "1rem",
-          fontWeight: "600",
-          transition: "all 0.3s ease",
-          boxShadow: isDark
-            ? "0 10px 15px -3px rgba(0, 0, 0, 0.5)"
-            : "0 10px 15px -3px rgba(249, 115, 22, 0.3)",
-          display: "inline-flex",
-          alignItems: "center",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = "scale(1.05)";
-          e.target.style.backgroundColor = "#ea580c";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = "scale(1)";
-          e.target.style.backgroundColor = "#f97316";
-        }}
-      >
-        Return to Homepage
-      </Link>
+      <main className="flex-1 grid place-items-center px-6 sm:px-12 py-20">
+        <div className="w-full max-w-5xl">
+          <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--color-punch)] mb-6">
+            ▮ This page does not exist.
+          </p>
+          <h1
+            className="font-display font-semibold leading-[0.85] tracking-[-0.04em]"
+            style={{ fontSize: "clamp(6rem, 22vw, 18rem)" }}
+          >
+            404<span className="text-[var(--color-punch)]">.</span>
+          </h1>
+          <p className="mt-10 max-w-xl text-lg text-mute leading-relaxed">
+            The link you followed may be broken, or the page may have been moved. Head back to the home page and start again.
+          </p>
+          <div className="mt-10">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 font-mono uppercase text-sm tracking-tight bg-ink text-paper dark:bg-paper dark:text-ink px-6 h-11 border-2 border-ink dark:border-paper hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper transition-colors"
+            >
+              Back home
+              <ArrowUpRight size={16} strokeWidth={2.5} />
+            </Link>
+          </div>
+        </div>
+      </main>
     </div>
   );
-};
+}
 
 export default NotFound;

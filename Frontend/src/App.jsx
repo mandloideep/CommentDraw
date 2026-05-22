@@ -15,7 +15,7 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="flex flex-col min-h-screen dark:bg-[var(--black)]">
+    <div className="flex flex-col min-h-screen bg-paper dark:bg-ink text-ink dark:text-paper font-sans">
       <AuthInitializer>
         <RouterProvider router={router} />
         {showGlobalLoader && <Loader />}

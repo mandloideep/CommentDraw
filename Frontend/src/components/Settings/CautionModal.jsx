@@ -4,50 +4,58 @@ export default function CautionModal({ isOpen, onClose, onConfirm, data }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-[#0a0a0a] p-6 shadow-2xl">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-full bg-red-500/10 p-2 text-red-500">
-            <AlertTriangle size={24} />
-          </div>
-          <h2 className="text-xl font-semibold text-white">{data.title}</h2>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/70 p-4">
+      <div className="w-full max-w-md border-2 border-ink dark:border-paper bg-paper dark:bg-ink text-ink dark:text-paper">
+        <div className="border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 py-4 flex items-center gap-3">
+          <AlertTriangle
+            size={18}
+            strokeWidth={2.25}
+            className={data.isDangerous ? "text-[var(--color-punch)]" : "text-mute"}
+          />
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+            {data.isDangerous ? "Destructive action" : "Confirm"}
+          </span>
         </div>
 
-        <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-          {data.message}
-        </p>
+        <div className="px-6 py-6">
+          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] mb-3">
+            {data.title}
+          </h2>
+          <p className="text-sm text-mute leading-relaxed">{data.message}</p>
 
-        {data.warnings && (
-          <div className="mb-6 rounded-xl bg-red-900/10 border border-red-900/20 p-4">
-            <p className="text-red-500 text-xs font-bold uppercase tracking-wider mb-2">
-              The following will be {data.actionType}:
-            </p>
-            <ul className="space-y-1">
-              {data.warnings.map((w, i) => (
-                <li
-                  key={i}
-                  className="text-gray-300 text-xs flex items-center gap-2"
-                >
-                  <span className="h-1 w-1 rounded-full bg-red-500" /> {w}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          {data.warnings && (
+            <div className="mt-6 border border-[var(--color-punch)] p-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--color-punch)] mb-3">
+                Will be {data.actionType}
+              </p>
+              <ul className="space-y-2">
+                {data.warnings.map((w, i) => (
+                  <li
+                    key={i}
+                    className="text-sm flex items-center gap-2 text-ink dark:text-paper"
+                  >
+                    <span className="h-1 w-1 bg-[var(--color-punch)] rounded-full" />
+                    {w}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
-        <div className="flex gap-3 justify-end mt-8">
+        <div className="border-t border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] px-6 py-4 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg border border-zinc-800 text-white hover:bg-zinc-900 transition-colors"
+            className="h-10 px-5 border-2 border-ink dark:border-paper bg-transparent font-mono text-[10px] uppercase tracking-[0.18em] hover:bg-ink hover:text-paper dark:hover:bg-paper dark:hover:text-ink transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className={`px-5 py-2 rounded-lg font-medium text-white transition-all active:scale-95 ${
+            className={`h-10 px-5 border-2 font-mono text-[10px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
               data.isDangerous
-                ? "bg-red-700 hover:bg-red-800"
-                : "bg-orange-600 hover:bg-orange-700"
+                ? "border-[var(--color-punch)] bg-[var(--color-punch)] text-paper hover:bg-ink hover:border-ink"
+                : "border-ink dark:border-paper bg-ink text-paper dark:bg-paper dark:text-ink hover:bg-[var(--color-punch)] hover:border-[var(--color-punch)] hover:text-paper"
             }`}
           >
             {data.confirmText}

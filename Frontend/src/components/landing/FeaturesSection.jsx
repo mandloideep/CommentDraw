@@ -1,77 +1,95 @@
-import { Trophy, Play, Users, Zap } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Trophy, Play, Users, Zap, ShieldCheck, Sparkles } from "lucide-react";
 
 const featuresData = [
   {
-    index: 1,
     Icon: Play,
-    title: "Fetch YouTube Comments",
+    title: "Fetch comments",
     description:
-      "Easily import comments from any public YouTube video using just the video URL",
+      "Pull comments from any public YouTube video using the official API. No scraping, no shenanigans.",
   },
   {
-    index: 2,
     Icon: Trophy,
-    title: "Smart Winner Selection",
+    title: "Random by design",
     description:
-      "Advanced algorithms to ensure fair and random winner selection with customizable filters",
+      "A deterministic random draw over a deduplicated commenter pool. Auditable, every time.",
   },
   {
-    index: 3,
     Icon: Users,
-    title: "Manage Participants",
+    title: "Multi-winner draws",
     description:
-      "View, filter, and manage all participants with detailed engagement metrics",
+      "Pick one winner or ten in a single run. Optional filters narrow down to qualifying comments.",
   },
   {
-    index: 4,
     Icon: Zap,
-    title: "Instant Results",
+    title: "Instant reveal",
     description:
-      "Get instant winner selection results with animated reveal and export capabilities",
+      "Winner cards animate in with a built-in countdown. Export to CSV or re-run with a single click.",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Read-only Google",
+    description:
+      "We use OAuth and only request the comments scope. Your YouTube credentials never touch us.",
+  },
+  {
+    Icon: Sparkles,
+    title: "Quota that scales",
+    description:
+      "Free for casual draws, Gold for the regulars, Diamond when comment counts go big.",
   },
 ];
 
 function FeaturesSection() {
-  const theme = useSelector((state) => state.theme.mode);
-
-  const iconColor = theme === "dark" ? "#ff4d29" : "#de0202";
-
   return (
-    <div className="flex flex-col justify-center items-center p-8 gap-8 dark:text-white">
-      <div className="flex flex-col items-center text-center gap-4 mb-8 mt-16">
-        <h2 className="text-3xl md:text-4xl font-semibold">
-          Powerful Features for Fair Selection
-        </h2>
-        <p className="text-lg md:text-xl text-gray-400 max-w-2xl">
-          Everything you need to run transparent and fair YouTube comment
-          giveaways
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:flex-row justify-center items-stretch gap-8">
-        {featuresData.map((feature) => (
-          <div
-            key={feature.index}
-            className="w-full md:w-[300px] lg:w-1/4 flex flex-col justify-start items-start gap-4 border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl transform-gpu hover:scale-105 transition-all duration-500 ease-out dark:bg-zinc-900/20"
-          >
-            {/* Icon Container */}
-            <div
-              className={`p-3 flex justify-center items-center rounded-xl ${
-                theme === "dark" ? "bg-red-500/10" : "bg-red-50"
-              }`}
-            >
-              <feature.Icon color={iconColor} size={24} />
-            </div>
-
-            <h3 className="text-xl font-medium">{feature.title}</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-              {feature.description}
+    <section
+      id="features"
+      className="w-full border-b border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] bg-paper dark:bg-ink"
+    >
+      <div className="px-5 sm:px-8 lg:px-12 py-20 sm:py-28">
+        <div className="grid lg:grid-cols-12 gap-y-10 lg:gap-x-12 mb-16">
+          <div className="lg:col-span-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute">
+              <span className="text-[var(--color-punch)]">03</span> / Features
             </p>
           </div>
-        ))}
+          <div className="lg:col-span-9">
+            <h2
+              className="font-display font-semibold leading-[0.95] tracking-[-0.04em] max-w-3xl"
+              style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+            >
+              Everything for a fair draw. Nothing else
+              <span className="text-[var(--color-punch)]">.</span>
+            </h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-[var(--color-rule)] dark:border-[var(--color-rule-dark)]">
+          {featuresData.map((feature, i) => (
+            <div
+              key={feature.title}
+              className="p-8 border-b border-r border-[var(--color-rule)] dark:border-[var(--color-rule-dark)] flex flex-col gap-4 hover:bg-ink/[0.02] dark:hover:bg-paper/[0.03] transition-colors"
+            >
+              <div className="flex items-start justify-between">
+                <feature.Icon
+                  size={26}
+                  strokeWidth={1.75}
+                  className="text-ink dark:text-paper"
+                />
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className="font-display text-xl font-semibold tracking-[-0.02em] mt-2">
+                {feature.title}
+              </h3>
+              <p className="text-sm text-mute leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
