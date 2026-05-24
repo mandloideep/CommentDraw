@@ -51,10 +51,11 @@ class SubscriptionServiceImplTest {
         samplePayment.setPlanType(SubscriptionTypes.GOLD);
     }
 
-    // Verifies BigDecimal to Enum mapping (49.00 -> GOLD)
+    // Verifies BigDecimal to Enum mapping against the price in SubscriptionTypes.GOLD
     @Test
     void getPlanByAmount_ShouldReturnCorrectType() {
-        SubscriptionTypes type = subscriptionService.getPlanByAmount(new BigDecimal("49.00"));
+        BigDecimal goldPrice = BigDecimal.valueOf(SubscriptionTypes.GOLD.getPrice());
+        SubscriptionTypes type = subscriptionService.getPlanByAmount(goldPrice);
         assertEquals(SubscriptionTypes.GOLD, type);
     }
 
