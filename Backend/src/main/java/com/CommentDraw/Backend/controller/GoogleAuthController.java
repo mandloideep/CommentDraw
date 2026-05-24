@@ -17,7 +17,7 @@ public class GoogleAuthController {
 
     private final GoogleAuthService googleAuthService;
 
-    @Value("${app_frontend_auth-success-url}")
+    @Value("${APP_FRONTEND_AUTH_SUCCESS_URL}")
     private String frontendSuccessUrl;
 
     public GoogleAuthController(GoogleAuthService googleAuthService) {
